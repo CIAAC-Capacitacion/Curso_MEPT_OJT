@@ -15,7 +15,7 @@
 .metodo-dato-icono{flex:0 0 38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
 .metodo-dato-icono svg{width:18px;height:18px}
 .metodo-dato-etiqueta{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#ecd9a8}
-.metodo-dato strong{font-size:16px}
+.paso-tour .metodo-dato strong{font-size:16px;color:#fff}
 .metodo-dato-texto{font-size:13.5px;color:#d6dbe4}
 .metodo-flujo{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;counter-reset:mf}
 .metodo-flujo li{background:#f3f3f1;border-radius:12px;padding:16px 18px;counter-increment:mf}
@@ -46,6 +46,10 @@
 @media (max-width:860px){.reglas-grid>li{flex-basis:calc((100% - 12px)/2)}}
 @media (max-width:560px){.reglas-grid>li{flex-basis:100%}}
 .silabo-cap{white-space:nowrap;flex-shrink:0}
+.silabo-titulo-fila{align-items:center}
+.silabo-pill{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.02em;color:#fff;background:var(--azul,#0E2A47);border-radius:999px;padding:3px 11px;margin-right:6px;vertical-align:middle;white-space:nowrap}
+.silabo-m2 .silabo-pill{background:var(--azul-medio,#1B4A78)}
+.silabo-m3 .silabo-pill{background:var(--oro,#B98A2E)}
 /* ===== Menú de 7 pasos: ocupa todo el ancho, sin desplazamiento ===== */
 .ruta-embarque{display:flex;align-items:flex-start;justify-content:space-between;width:100%;max-width:100%;overflow:visible;gap:0;padding:4px 0 2px}
 .ruta-embarque .ruta-punto{flex:0 0 auto;width:92px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0}
@@ -295,7 +299,7 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 <li class="silabo-tarjeta silabo-m1">
 <span class="silabo-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m14.5 9.5-2 5-5 2 2-5 5-2Z"/></svg></span>
 <div class="silabo-info">
-<div class="silabo-titulo-fila"><p class="silabo-titulo">Módulo 1 · Marco general del Programa OJT</p><span class="silabo-cap">Cap. 2–3 MEPT</span></div>
+<div class="silabo-titulo-fila"><p class="silabo-titulo"><span class="silabo-pill">Módulo 1</span>Marco general del Programa OJT</p><span class="silabo-cap">Cap. 2–3 MEPT</span></div>
 <p class="silabo-desc">Qué es el OJT, para qué sirve y quién es responsable de qué.</p>
 </div>
 </li>
@@ -303,7 +307,7 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 <li class="silabo-tarjeta silabo-m2">
 <span class="silabo-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2.5 2.5L16 9"/><rect x="4" y="4" width="16" height="16" rx="2.5"/></svg></span>
 <div class="silabo-info">
-<div class="silabo-titulo-fila"><p class="silabo-titulo">Módulo 2 · Requisitos de implementación del Programa OJT</p><span class="silabo-cap">Cap. 4 MEPT</span></div>
+<div class="silabo-titulo-fila"><p class="silabo-titulo"><span class="silabo-pill">Módulo 2</span>Requisitos de implementación del Programa OJT</p><span class="silabo-cap">Cap. 4 MEPT</span></div>
 <p class="silabo-desc">Niveles 1, 2 y 3, convalidación, designación y modificación de tareas.</p>
 </div>
 </li>
@@ -311,7 +315,7 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 <li class="silabo-tarjeta silabo-m3">
 <span class="silabo-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.3"/><circle cx="18" cy="6" r="2.3"/><path d="M8 17 16.5 8"/></svg></span>
 <div class="silabo-info">
-<div class="silabo-titulo-fila"><p class="silabo-titulo">Módulo 3 · Proceso de ejecución del Programa OJT</p><span class="silabo-cap">Cap. 5 y Anexos 1–2 MEPT</span></div>
+<div class="silabo-titulo-fila"><p class="silabo-titulo"><span class="silabo-pill">Módulo 3</span>Proceso de ejecución del Programa OJT</p><span class="silabo-cap">Cap. 5 y Anexos 1–2 MEPT</span></div>
 <p class="silabo-desc">Cómo se ejecuta el entrenamiento paso a paso.</p>
 </div>
 </li>
