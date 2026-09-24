@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actualización del Manual de Entrenamiento en el Puesto de Trabajo OJT</title>
+<link rel="stylesheet" href="styles.css?v=17">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Método de trabajo y Reglas (bienvenida) ===== */
+.metodo-datos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.metodo-dato{display:flex;gap:14px;align-items:center;background:#13294b;color:#fff;border-radius:14px;padding:18px 20px}
+.metodo-dato-icono{flex:0 0 38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
+.metodo-dato-icono svg{width:18px;height:18px}
+.metodo-dato-etiqueta{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#ecd9a8}
+.metodo-dato strong{font-size:16px}
+.metodo-dato-texto{font-size:13.5px;color:#d6dbe4}
+.metodo-flujo{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;counter-reset:mf}
+.metodo-flujo li{background:#f3f3f1;border-radius:12px;padding:16px 18px;counter-increment:mf}
+.metodo-flujo li::before{content:counter(mf);display:flex;width:28px;height:28px;border-radius:50%;background:var(--oro,#b8893a);color:#fff;font-weight:600;font-size:13px;align-items:center;justify-content:center;margin-bottom:10px}
+.metodo-flujo strong{display:block;color:#13294b;margin-bottom:4px}
+.metodo-flujo li>span{font-size:14px;color:var(--texto-suave,#6b7280)}
+.metodo-modulos{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.metodo-modulos span{font-size:12px;font-weight:600;background:#13294b;color:#fff;border-radius:6px;padding:2px 8px}
+.metodo-modulos em{font-style:normal;font-weight:600;color:var(--oro,#b8893a)}
+.reglas-grid{list-style:none;padding:0;margin:0 0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.reglas-grid li{display:flex;gap:14px;align-items:flex-start;background:#f3f3f1;border-radius:12px;padding:16px 18px}
+.reglas-icono{flex:0 0 34px;height:34px;border-radius:50%;background:#13294b;color:#fff;display:flex;align-items:center;justify-content:center}
+.reglas-icono svg{width:17px;height:17px}
+.reglas-icono.reglas-oro{background:var(--oro,#b8893a)}
+.reglas-grid strong{display:block;color:#13294b}
+.reglas-grid li span:not(.reglas-icono){font-size:14px;color:var(--texto-suave,#6b7280)}
+.reglas-grid li.reglas-dudas{grid-column:1/-1}
+.reglas-contactos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:12px}
+.reglas-contacto{background:#fff;border:1px solid #e3e3e0;border-left:3px solid var(--oro,#b8893a);padding:12px 14px}
+.reglas-grid li span.reglas-contacto-rol{display:block;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--oro,#b8893a)}
+.reglas-contacto-nombre{margin:2px 0 4px;font-weight:600;color:#13294b;font-size:14.5px}
+.reglas-contacto a{font-size:14px;color:#13294b;text-decoration:underline;text-underline-offset:2px;word-break:break-all}
+.reglas-contacto-ext{margin:4px 0 0;font-size:13.5px;color:var(--texto-suave,#6b7280)}
+.reglas-grid{display:flex !important;flex-wrap:wrap;justify-content:center;gap:12px}
+.reglas-grid>li{flex:0 1 calc((100% - 24px)/3);min-width:0}
+.reglas-grid>li.reglas-dudas{flex-basis:100%}
+.reglas-grid .sin-corte{white-space:nowrap}
+@media (max-width:860px){.reglas-grid>li{flex-basis:calc((100% - 12px)/2)}}
+@media (max-width:560px){.reglas-grid>li{flex-basis:100%}}
+.silabo-cap{white-space:nowrap;flex-shrink:0}
+/* ===== Menú de 7 pasos: ocupa todo el ancho, sin desplazamiento ===== */
+.ruta-embarque{display:flex;align-items:flex-start;justify-content:space-between;width:100%;max-width:100%;overflow:visible;gap:0;padding:4px 0 2px}
+.ruta-embarque .ruta-punto{flex:0 0 auto;width:92px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0}
+.ruta-embarque .ruta-punto-icono{width:44px;height:44px;flex:0 0 44px}
+.ruta-embarque .ruta-punto-etiqueta{display:block;width:100%;white-space:normal;text-align:center;line-height:1.25;min-height:2.5em}
+.ruta-embarque .ruta-punto-linea{flex:1 1 auto;min-width:8px;max-width:none;margin:21px -14px 0;align-self:flex-start}
+@media (max-width:760px){.ruta-embarque .ruta-punto{width:64px}.ruta-embarque .ruta-punto-etiqueta{font-size:10.5px}.ruta-embarque .ruta-punto-icono{width:36px;height:36px;flex-basis:36px}.ruta-embarque .ruta-punto-linea{margin:17px -8px 0}}
+</style>
+</head>
+<body>
+
+<!-- ================= PANTALLA DE CARGA ================= -->
+<div id="pantallaCarga" class="pantalla-carga">
+<div class="pantalla-carga-spinner">
+<svg class="pantalla-carga-icono" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+<g transform="translate(0.6,2.1)">
+<path d="M17.8 3.2c.6.6.6 1.6 0 2.2l-2.3 2.3 1 5.6-1.8 1.8-2-4.9-3 3 .5 2.3-1.1 1.1-1.6-2.4-2.4-1.6 1.1-1.1 2.3.5 3-3-4.9-2 1.8-1.8 5.6 1 2.3-2.3c.6-.6 1.6-.6 2.2 0Z"/>
+</g>
+</svg>
+</div>
+</div>
+
+<!-- ================= MODAL DE ACCESO ================= -->
+<div id="modalAcceso" class="modal-acceso oculto">
+<div class="modal-caja">
+<div class="marca">
+<div class="marca-icono">
+<img src="logo CIAAC-03.png" alt="Logo CIAAC">
+</div>
+<div class="marca-texto">
+<p>CIAAC · AFAC</p>
+</div>
+</div>
+
+<!-- PASO 1: correo -->
+<div id="pasoCorreo" class="paso-modal activo">
+<h2>Acceso al curso</h2>
+<p>Ingresa tu correo institucional. Te enviaremos un código de verificación.</p>
+<input type="email" id="inputCorreo" placeholder="nombre.apellido@afac.gob.mx">
+<p id="errorCorreo" class="error-correo"></p>
+<button class="btn-principal" id="btnEnviarCodigo" onclick="solicitarCodigo()">Enviar código</button>
+</div>
+
+<!-- PASO 2: código -->
+<div id="pasoCodigo" class="paso-modal">
+<h2>Verifica tu correo</h2>
+<p>Enviamos un código de 6 dígitos a <strong id="correoParaCodigo"></strong></p>
+<input type="text" inputmode="numeric" maxlength="6" id="inputCodigo" placeholder="000000">
+<p id="errorCodigo" class="error-correo"></p>
+<p id="confirmacionReenvio" class="confirmacion-reenvio"></p>
+<button class="btn-principal" id="btnConfirmarCodigo" onclick="confirmarCodigo()">Confirmar</button>
+<div class="modal-acciones-secundarias">
+<a href="#" id="linkReenviar" onclick="reenviarCodigo(); return false;">Reenviar código</a>
+<a href="#" onclick="volverACorreo(); return false;">Cambiar correo</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- ================= APP (oculta hasta validar correo) ================= -->
+<div id="appCurso" style="display:none;">
+
+<header class="header">
+
+<div class="header-inner">
+
+<div class="header-marca">
+
+<div class="logo">
+
+<img src="logo CIAAC-03.png" alt="Logo CIAAC">
+
+</div>
+
+<div>
+
+<p>Curso autogestivo</p>
+
+<h1>Actualización del Manual de Entrenamiento en el Puesto de Trabajo OJT</h1>
+
+</div>
+
+</div>
+
+<div class="header-usuario" id="headerUsuario" onclick="alternarMenuUsuario()">
+<span class="header-usuario-icono">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-4 4.2-6 7-6s5.8 2 7 6"/></svg>
+</span>
+<span><span class="header-usuario-saludo">Hola,</span> <span id="saludoUsuario"></span></span>
+<svg class="header-usuario-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+
+<div class="menu-usuario" id="menuUsuario" onclick="event.stopPropagation()">
+<div class="menu-usuario-correo">
+<p>Sesión iniciada como</p>
+<strong id="correoMenuUsuario"></strong>
+</div>
+<button type="button" class="menu-usuario-salir" onclick="cerrarSesion()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+Cerrar sesión
+</button>
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<nav class="menu" id="menuNav">
+
+<button data-sec="inicio" class="activo" onclick="mostrarSeccion('inicio')">
+
+<span class="icono-menu">🏠</span> Inicio
+
+</button>
+
+<button data-sec="curso" onclick="mostrarSeccion('curso')">
+
+<span class="icono-menu">📚</span> Curso
+
+</button>
+
+<button data-sec="evaluacion" onclick="mostrarSeccion('evaluacion')">
+
+<span class="icono-menu">📝</span> Evaluación
+
+</button>
+
+<button data-sec="progreso" onclick="mostrarSeccion('progreso')">
+
+<span class="icono-menu">📊</span> Mi progreso
+
+</button>
+
+</nav>
+
+<main>
+
+<!-- ================= INICIO ================= -->
+
+<section id="inicio" class="seccion activa">
+
+<div class="hero hero-tour">
+
+<nav class="ruta-embarque" aria-label="Progreso de la bienvenida">
+
+<button type="button" class="ruta-punto activo" data-paso="1" onclick="mostrarPaso(1)" aria-label="Paso 1: Bienvenida">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6"/><path d="M6 3v18"/><circle cx="14.2" cy="12" r="1"/></svg></span>
+<span class="ruta-punto-etiqueta">Bienvenida</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="1"></span>
+
+<button type="button" class="ruta-punto" data-paso="2" onclick="mostrarPaso(2)" aria-label="Paso 2: Contenido temático">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span>
+<span class="ruta-punto-etiqueta">Contenido temático</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="2"></span>
+
+<button type="button" class="ruta-punto" data-paso="3" onclick="mostrarPaso(3)" aria-label="Paso 3: Objetivo general">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V3"/><path d="M6 4h11l-2.6 3.6L17 11H6"/></svg></span>
+<span class="ruta-punto-etiqueta">Objetivo general</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="3"></span>
+
+<button type="button" class="ruta-punto" data-paso="4" onclick="mostrarPaso(4)" aria-label="Paso 4: Método de trabajo">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+<span class="ruta-punto-etiqueta">Método de trabajo</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="4"></span>
+
+<button type="button" class="ruta-punto" data-paso="5" onclick="mostrarPaso(5)" aria-label="Paso 5: Reglas">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.6 7 9.5 4-1.9 7-5.2 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+<span class="ruta-punto-etiqueta">Reglas</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="5"></span>
+
+<button type="button" class="ruta-punto" data-paso="6" onclick="mostrarPaso(6)" aria-label="Paso 6: Recursos">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5a2 2 0 0 1 2-2h3.4l1.8 2H18a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6.5Z"/></svg></span>
+<span class="ruta-punto-etiqueta">Recursos</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="6"></span>
+
+<button type="button" class="ruta-punto" data-paso="7" onclick="mostrarPaso(7)" aria-label="Paso 7: Evaluación">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1v1H8v-1a1 1 0 0 1 1-1Z"/><path d="M8.5 13 11 15.5 15.5 10.5"/></svg></span>
+<span class="ruta-punto-etiqueta">Evaluación</span>
+</button>
+
+</nav>
+
+<p class="ruta-embarque-contador" id="rutaContador">Paso 1 de 7 · Bienvenida</p>
+
+<div class="paso-tour activo" id="paso1">
+
+<div class="bienvenida-fila">
+
+<img src="bienvenida.png" alt="Ilustración de bienvenida al curso" class="bienvenida-imagen">
+
+<h2 id="saludoBienvenida">Bienvenido(a)</h2>
+
+</div>
+
+<p>
+
+Te damos la bienvenida al curso de <strong>Actualización del Manual de Entrenamiento en el Puesto de Trabajo OJT (MEPT/OJT)</strong>, de la Agencia Federal de Aviación Civil (AFAC), impartido a través del Centro Internacional de Adiestramiento de Aviación Civil (CIAAC).
+
+</p>
+
+<p>
+
+Este programa forma parte de un esfuerzo institucional compartido entre la Dirección del CIAAC, las Direcciones Ejecutivas, Direcciones de Área y Comandancias que conforman la AFAC, cuyo propósito es asegurar que cada Inspector Verificador Aeronáutico (IVA) desarrolle, demuestre y consolide las competencias necesarias para desempeñar sus funciones con los más altos estándares de seguridad operacional, conforme a lo establecido en el <strong>Manual de Entrenamiento en el Puesto de Trabajo (MEPT)</strong> vigente.
+
+</p>
+
+<p>
+
+A lo largo de este curso conocerás la estructura del Programa OJT, las figuras que lo conforman, así como los procesos, niveles de conocimiento, documentación y criterios de evaluación que garantizan un entrenamiento sólido, trazable y de calidad.
+
+</p>
+
+<div class="bienvenida-destacado">
+
+<span class="bienvenida-destacado-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/></svg></span>
+
+<p>
+
+Tu compromiso y participación activa son clave para el éxito de este programa. <strong>¡Comencemos!</strong>
+
+</p>
+
+</div>
+
+</div>
+
+<div class="paso-tour" id="paso2">
+
+<h3>Contenido temático</h3>
+
+<ul class="silabo-tarjetas">
+
+<li class="silabo-tarjeta silabo-m1">
+<span class="silabo-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m14.5 9.5-2 5-5 2 2-5 5-2Z"/></svg></span>
+<div class="silabo-info">
+<div class="silabo-titulo-fila"><p class="silabo-titulo">Módulo 1 · Marco general del Programa OJT</p><span class="silabo-cap">Cap. 2–3 MEPT</span></div>
+<p class="silabo-desc">Qué es el OJT, para qué sirve y quién es responsable de qué.</p>
+</div>
+</li>
+
+<li class="silabo-tarjeta silabo-m2">
+<span class="silabo-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2.5 2.5L16 9"/><rect x="4" y="4" width="16" height="16" rx="2.5"/></svg></span>
+<div class="silabo-info">
+<div class="silabo-titulo-fila"><p class="silabo-titulo">Módulo 2 · Requisitos de implementación del Programa OJT</p><span class="silabo-cap">Cap. 4 MEPT</span></div>
+<p class="silabo-desc">Niveles 1, 2 y 3, convalidación, designación y modificación de tareas.</p>
+</div>
+</li>
+
+<li class="silabo-tarjeta silabo-m3">
+<span class="silabo-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.3"/><circle cx="18" cy="6" r="2.3"/><path d="M8 17 16.5 8"/></svg></span>
+<div class="silabo-info">
+<div class="silabo-titulo-fila"><p class="silabo-titulo">Módulo 3 · Proceso de ejecución del Programa OJT</p><span class="silabo-cap">Cap. 5 y Anexos 1–2 MEPT</span></div>
+<p class="silabo-desc">Cómo se ejecuta el entrenamiento paso a paso.</p>
+</div>
+</li>
+
+</ul>
+
+</div>
+
+<div class="paso-tour" id="paso3">
+
+<h3>Objetivos del curso</h3>
+
+<p class="paso1-lead">Objetivo general</p>
+
+<p>Dado un <strong>caso práctico</strong>, distinguir la aplicación del Programa de Entrenamiento en el Puesto de Trabajo conforme al <strong>MEPT R06</strong>.</p>
+
+<p class="paso1-lead" style="margin-top:20px;">Objetivos específicos</p>
+
+<ul class="tarjetas-objetivo">
+
+<li>
+<span class="tarjetas-objetivo-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="19" r="2.2"/><path d="M12 7.2V12M12 12 6 16.8M12 12l6 4.8"/></svg></span>
+<span>Relacionar los integrantes de la <strong>estructura organizacional</strong> del Programa OJT con sus funciones y responsabilidades.</span>
+</li>
+
+<li>
+<span class="tarjetas-objetivo-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4v-4H4v4Zm6 0h4v-9h-4v9Zm6 0h4V7h-4v13Z"/></svg></span>
+<span>Distinguir los <strong>niveles de entrenamiento OJT</strong> del Inspector Verificador Aeronáutico.</span>
+</li>
+
+<li>
+<span class="tarjetas-objetivo-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4"/><path d="M8.5 12.5h7M8.5 15.5h7M8.5 18h4"/></svg></span>
+<span>Ordenar las <strong>seis etapas del proceso de ejecución</strong> del Programa OJT.</span>
+</li>
+
+</ul>
+
+</div>
+
+<div class="paso-tour" id="paso4">
+
+<h3>Método de trabajo</h3>
+
+<p class="subtitulo-hero">Así vas a trabajar durante el curso.</p>
+
+<div class="metodo-datos">
+
+<div class="metodo-dato">
+<span class="metodo-dato-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+<div><span class="metodo-dato-etiqueta">Duración</span><strong>6 horas</strong> <span class="metodo-dato-texto">· 3 módulos</span></div>
+</div>
+
+<div class="metodo-dato">
+<span class="metodo-dato-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5v3M16 3.5v3M4.5 9h15"/><rect x="4.5" y="5.5" width="15" height="15" rx="2"/></svg></span>
+<div><span class="metodo-dato-etiqueta">Horario</span><strong>Abierto</strong><br><span class="metodo-dato-texto">Dentro del periodo del 28/09/2026 al 06/10/2026</span></div>
+</div>
+
+</div>
+
+<div class="modalidad-tarjetas" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:14px;">
+
+<div class="modalidad-tarjeta modalidad-exito">
+<span class="modalidad-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"/></svg></span>
+<div><strong>Tú decides el ritmo.</strong><p>Avanza conforme a tu disponibilidad de tiempo, dentro del plazo establecido para tu proceso de capacitación.</p></div>
+</div>
+
+<div class="modalidad-tarjeta modalidad-aviso">
+<span class="modalidad-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4.5M12 17h.01"/><path d="M10.3 3.9 2.7 18.1A1.8 1.8 0 0 0 4.3 20.7h15.4a1.8 1.8 0 0 0 1.6-2.6L13.7 3.9a1.8 1.8 0 0 0-3.4 0Z"/></svg></span>
+<div><strong>No te exime de tu responsabilidad.</strong><p>Debes concluir el curso en tiempo y forma, y acreditar la evaluación o actividad de cierre correspondiente dentro de la fecha establecida.</p></div>
+</div>
+
+</div>
+
+<p class="paso1-lead" style="margin-top:24px;">Ruta de estudio</p>
+
+<ol class="metodo-flujo">
+
+<li><strong>Estudia en orden</strong><span>Cada módulo constituye la base del siguiente.</span>
+<div class="metodo-modulos"><span>M1</span><em>→</em><span>M2</span><em>→</em><span>M3</span></div></li>
+
+<li><strong>Resuelve las actividades</strong><span>Cada módulo incluye una o dos actividades interactivas que desbloquean el siguiente.</span></li>
+
+<li><strong>Cierra el curso</strong><span>Con la práctica de llenado y la evaluación final.</span></li>
+
+</ol>
+
+</div>
+
+<div class="paso-tour" id="paso5">
+
+<h3>Reglas</h3>
+
+<p class="subtitulo-hero">Para aprovechar al máximo tu capacitación.</p>
+
+<ul class="reglas-grid">
+
+<li>
+<span class="reglas-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M10 20v-5h4v5"/></svg></span>
+<div><strong>Espacio sin interrupciones</strong><span>Estudia en un lugar tranquilo que te permita concentrarte.</span></div>
+</li>
+
+<li>
+<span class="reglas-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.8 16a5 5 0 0 1 6.4 0"/><circle cx="12" cy="19.2" r=".8"/></svg></span>
+<div><strong>Internet estable</strong><span>Asegura una buena conexión para no perder tu avance.</span></div>
+</li>
+
+<li>
+<span class="reglas-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2.5 2.5L16 9"/><rect x="4" y="4" width="16" height="16" rx="2.5"/></svg></span>
+<div><strong>No omitas actividades</strong><span>Todas forman parte de tu proceso de aprendizaje.</span></div>
+</li>
+
+<li>
+<span class="reglas-icono reglas-oro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4M8.5 12.5h7M8.5 15.5h7"/></svg></span>
+<div><strong>Ten a la mano el MEPT</strong><span>Consulta el MEPT vigente (<span class="sin-corte">M-DCIA-CPEPT-01-R06</span>) para profundizar en los numerales referidos a lo largo del curso.</span></div>
+</li>
+
+<li>
+<span class="reglas-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4A8 8 0 1 1 8 18.8L4 20Z"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5M12 16h.01"/></svg></span>
+<div><strong>Responde antes de ver la respuesta</strong><span>Pon a prueba tu criterio antes de revisar la retroalimentación.</span></div>
+</li>
+
+<li class="reglas-dudas">
+<span class="reglas-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg></span>
+<div style="flex:1;min-width:0"><strong>Envía tus dudas</strong><span>Escríbelas a cualquiera de los siguientes contactos del curso:</span>
+<div class="reglas-contactos">
+<div class="reglas-contacto"><span class="reglas-contacto-rol">Instructor del curso</span><p class="reglas-contacto-nombre">Rodolfo Gerardo Morales Díaz</p><a href="mailto:rodolfo.morales@afac.gob.mx">rodolfo.morales@afac.gob.mx</a><p class="reglas-contacto-ext">Ext. 18662 y 18674</p></div>
+<div class="reglas-contacto"><span class="reglas-contacto-rol">Coordinador del curso</span><p class="reglas-contacto-nombre">José Manuel Figueroa Hernández</p><a href="mailto:jose.figueroa@afac.gob.mx">jose.figueroa@afac.gob.mx</a><p class="reglas-contacto-ext">Ext. 18661</p></div>
+</div></div>
+</li>
+
+</ul>
+
+<div class="cierre-hero-caja">
+
+<p class="cierre-hero">
+
+La AFAC reconoce en el Programa OJT una responsabilidad
+
+institucional, orientada al fortalecimiento del
+
+criterio técnico del personal y al aseguramiento de la
+
+seguridad operacional del Estado Mexicano.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="paso-tour" id="paso6">
+
+<h3>Recursos de apoyo</h3>
+
+<p class="subtitulo-hero">Disponibles en todo momento dentro del curso.</p>
+
+<a class="recursos-destacado" href="manual-mept.pdf" target="_blank" rel="noopener">
+<span class="recursos-destacado-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4"/><path d="M8.5 12.5h7M8.5 15.5h7M8.5 18h4"/></svg></span>
+<div>
+<p class="recursos-destacado-titulo">Manual de Entrenamiento en el Puesto de Trabajo OJT (MEPT)</p>
+<p class="recursos-destacado-texto">M-DCIA-CPEPT-01-R06 — tu referencia principal en todo el curso.</p>
+</div>
+<span class="recursos-destacado-descarga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 19h14"/></svg></span>
+</a>
+
+<ul class="recursos-lista">
+
+<li>
+<a href="carta-politica.pdf" target="_blank" rel="noopener" class="recursos-lista-link">
+<span class="recursos-lista-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M8 9h6M8 13h8M8 17h5"/></svg></span>
+<span><strong>Carta de política</strong> · CP-CIAAC-01/23 R03</span>
+<svg class="recursos-lista-descarga" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 19h14"/></svg>
+</a>
+</li>
+
+<li>
+<span class="recursos-lista-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 16V10M12 16V8M16 16v-5"/></svg></span>
+<span><strong>Infografías</strong> · dentro de cada módulo</span>
+</li>
+
+<li>
+<span class="recursos-lista-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5v3M15 3.5v3M5 8h14M5.5 6h13a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/><path d="m9.5 13 2 2 3-3.5"/></svg></span>
+<span><strong>Ejercicios interactivos</strong> · dentro de cada módulo</span>
+</li>
+
+
+</ul>
+
+
+
+</div>
+
+<div class="paso-tour" id="paso7">
+
+<h3>Evaluación</h3>
+
+<p class="subtitulo-hero">Cómo se valora tu aprendizaje.</p>
+
+<ul class="lista-icono">
+
+<li>
+<span class="lista-icono-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.5v3M15 3.5v3M5 8h14M5.5 6h13a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/><path d="m9.5 13 2 2 3-3.5"/></svg></span>
+<span><strong>Actividad del módulo:</strong> cada módulo incluye una o dos actividades interactivas que debes completar correctamente para desbloquear el siguiente módulo.</span>
+</li>
+
+<li>
+<span class="lista-icono-svg" style="background:var(--oro);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.7L4 15"/><path d="M4 20v-5h5"/></svg></span>
+<span><strong>Evaluación de práctica:</strong> al concluir los 3 módulos, tienes disponible una evaluación de repaso libre, pensada para que verifiques tu comprensión antes de presentar la evaluación final.</span>
+</li>
+
+<li class="lista-icono-destacado">
+<span class="lista-icono-svg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5.2"/><path d="M8.2 12.5 6 20l6-3 6 3-2.2-7.5"/></svg></span>
+<span><strong>Evaluación final:</strong> se realiza en Microsoft Forms, ligada a tu correo institucional, y se desbloquea al completar los 3 módulos. Es la única evaluación que se toma en cuenta para tu acreditación, con un mínimo de <strong>80/100</strong>. Una vez acreditada, en un plazo de <strong>10 a 15 días hábiles</strong> se generará tu constancia, disponible en la Plataforma de Capacitación AFAC.</span>
+</li>
+
+</ul>
+
+<p style="font-size:12.5px;color:var(--texto-suave);margin-top:14px;">Se invita al participante a iniciar el presente curso con el compromiso y la disciplina que este proceso formativo requiere.</p>
+
+</div>
+
+<div class="tour-botones">
+
+<button class="btn-secundario" id="btnAtras" onclick="pasoAnterior()">
+
+← Atrás
+
+</button>
+
+<button class="btn-principal" id="btnSiguiente" onclick="siguientePaso()">
+
+Siguiente →
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= CURSO ================= -->
+
+<section id="curso" class="seccion">
+
+<h2>Contenido del curso</h2>
+
+<p>
+
+Completa cada módulo en orden para avanzar al siguiente.
+
+</p>
+
+<div class="ruta" id="rutaModulos"></div>
+
+<div id="contenidoModulo"
+
+class="contenido-modulo">
+
+</div>
+
+</section>
+
+<!-- ================= EVALUACIÓN ================= -->
+
+<section id="evaluacion" class="seccion">
+
+<h2>Evaluación final</h2>
+
+<div class="aviso-eval">
+
+Esta es una evaluación de práctica. La evaluación final se realiza en Microsoft Forms, ligada a tu correo institucional, y se desbloquea al concluir el módulo 3.
+
+</div>
+
+<form id="quiz">
+
+<div class="pregunta">
+
+<h3>
+
+1. ¿Quién sigue siendo responsable de que un IVA ejecute su entrenamiento, aunque el CIAAC conduzca la metodología institucional?
+
+</h3>
+
+<label>
+
+<input type="radio"
+
+name="p1"
+
+value="a">
+
+El propio IVA Aprendiz, sin intervención de su área.
+
+</label>
+
+<label>
+
+<input type="radio"
+
+name="p1"
+
+value="b">
+
+Su Dirección o Comandancia de adscripción.
+
+</label>
+
+<label>
+
+<input type="radio"
+
+name="p1"
+
+value="c">
+
+Nadie; la responsabilidad se transfiere por completo al CIAAC.
+
+</label>
+
+</div>
+
+<div class="pregunta">
+
+<h3>
+
+2. Ya tienes evidencia documental que acredita el Nivel 1 de una tarea. ¿Puedes usarla también para acreditar el Nivel 2 de esa misma tarea?
+
+</h3>
+
+<label>
+
+<input type="radio"
+
+name="p2"
+
+value="a">
+
+Sí, si pertenece a la misma tarea y especialidad.
+
+</label>
+
+<label>
+
+<input type="radio"
+
+name="p2"
+
+value="b">
+
+No — cada nivel requiere evento y evidencia propios, en fecha distinta.
+
+</label>
+
+<label>
+
+<input type="radio"
+
+name="p2"
+
+value="c">
+
+Sí, siempre que se cargue con otro nombre de archivo.
+
+</label>
+
+</div>
+
+<div class="pregunta">
+
+<h3>
+
+3. Terminaste un evento de entrenamiento. ¿Cuál es el plazo máximo, en días naturales, para remitir tu documentación?
+
+</h3>
+
+<label>
+
+<input type="radio"
+
+name="p3"
+
+value="a">
+
+3 días naturales.
+
+</label>
+
+<label>
+
+<input type="radio"
+
+name="p3"
+
+value="b">
+
+10 días naturales.
+
+</label>
+
+<label>
+
+<input type="radio"
+
+name="p3"
+
+value="c">
+
+No existe un plazo definido.
+
+</label>
+
+</div>
+
+<button type="button"
+
+class="btn-secundario"
+
+
+onclick="calificar()">
+
+Calificar práctica
+
+</button>
+
+</form>
+
+<div id="resultado" style="display:none;"></div>
+
+<button id="btnIrEvaluacion" class="btn-principal" style="margin-top: 20px; width:auto;" onclick="irAEvaluacionOficial()">
+
+Ir a la evaluación final (Microsoft Forms) →
+
+</button>
+
+</section>
+
+<!-- ================= PROGRESO ================= -->
+
+<section id="progreso" class="seccion">
+
+<h2>Mi progreso</h2>
+
+
+<div class="progreso-container">
+
+<div class="barra">
+
+<div id="barraProgreso">
+
+</div>
+
+</div>
+
+<p id="porcentaje">
+
+0% completado
+
+</p>
+
+</div>
+
+<div id="estadoModulos">
+
+</div>
+
+<button class="btn-secundario"
+
+onclick="reiniciarCurso()">
+
+Reiniciar progreso
+
+</button>
+
+</section>
+
+</main>
+
+<footer>
+
+<div class="footer-inner">
+
+<p class="footer-nombre">
+
+Centro Internacional de Adiestramiento de Aviación Civil
+
+</p>
+
+<p class="footer-linea">
+<svg class="footer-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-7.4-7-12a7 7 0 0 1 14 0c0 4.6-7 12-7 12Z"/><circle cx="12" cy="9" r="2.4"/></svg>
+Boulevard Puerto Aéreo 161, Colonia Federal, Alcaldía Venustiano Carranza, C. P. 15700, Ciudad de México
+</p>
+
+<p class="footer-contacto">
+
+<span class="footer-linea">
+<svg class="footer-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L14 13l5 2v3a2 2 0 0 1-2 2C10 20 4 14 4 6a2 2 0 0 1 1-2Z"/></svg>
+Tel: (55)5723 9300 Ext. 18674
+</span>
+
+<span class="footer-linea">
+<svg class="footer-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+Correo: jose.figueroa@afac.gob.mx
+</span>
+
+</p>
+
+</div>
+
+</footer>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
