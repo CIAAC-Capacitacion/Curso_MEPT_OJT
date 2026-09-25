@@ -7,7 +7,7 @@ const DOMINIO_INSTITUCIONAL = "@afac.gob.mx";
 // URLs de los dos flujos de Power Automate para el código de acceso.
 const URL_ENVIAR_CODIGO = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/ba842193e68f400998fc6341ccaa467c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=C3iuWkiPu8P7CBwgNp9rZLmnA2O71bzkBs0tO94wNoA";
 const URL_VALIDAR_CODIGO = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/26/workflows/99a974f68f4b410697ac1202e178d13d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FiEyhSJ-qHuIAB-OcC0EoN3ZxaxDMzXtqr1t2oKs0gI";
-const URL_VERIFICAR_SESION = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b4.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/ffe6d7e4bf2d43a3b9b52c6ed5d06a86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=AG4AMv9-mCbUgispAE0r7ElUAdmPXUYAz8CnSqRTT4w";
+const URL_VERIFICAR_SESION = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/ffe6d7e4bf2d43a3b9b52c6ed5d06a86/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=AG4AMv9-mCbUgispAE0r7ElUAdmPXUYAz8CnSqRTT4w";
 
 // URL del flujo que registra progreso (correo + evento + fecha).
 const WEBHOOK_URL = "";
