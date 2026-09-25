@@ -57,6 +57,17 @@
 .ruta-embarque .ruta-punto-etiqueta{display:block;width:100%;white-space:normal;text-align:center;line-height:1.25;min-height:2.5em}
 .ruta-embarque .ruta-punto-linea{flex:1 1 auto;min-width:8px;max-width:none;margin:21px -14px 0;align-self:flex-start}
 @media (max-width:760px){.ruta-embarque .ruta-punto{width:64px}.ruta-embarque .ruta-punto-etiqueta{font-size:10.5px}.ruta-embarque .ruta-punto-icono{width:36px;height:36px;flex-basis:36px}.ruta-embarque .ruta-punto-linea{margin:17px -8px 0}}
+/* ===== Móvil: modal centrado y menú de usuario visible ===== */
+.header-usuario{z-index:60}
+.menu-usuario{z-index:60}
+@media (max-width:600px){
+.header-usuario{position:relative;margin-left:auto;margin-right:auto}
+.menu-usuario{left:50%;right:auto;transform:translateX(-50%);width:min(280px,88vw)}
+}
+@media (max-width:480px){
+.modal-acceso{padding:16px;align-items:center;overflow-y:auto}
+.modal-caja{border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);margin:auto}
+}
 </style>
 </head>
 <body>
