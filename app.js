@@ -12,8 +12,9 @@ const URL_VERIFICAR_SESION = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.e
 // URL del flujo que registra progreso (correo + evento + fecha).
 const WEBHOOK_URL = "";
 
-// Link a tu Microsoft Form oficial de evaluación.
-const LINK_EVALUACION_OFICIAL = "https://forms.office.com/r/TU_ID_AQUI";
+// URLs de los flujos de la evaluación final (Power Automate).
+const URL_INICIAR_EXAMEN = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/be2d198334b541a78d6d891bdb56f82c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FPjMfAY-MWv3Ur5zD7nLslxC1nGy7_PUBcGd0Nz87SE";
+const URL_ENVIAR_EXAMEN = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/03/workflows/e2137e0756e7404aadc8eae3451e57e6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9jrwCK6IyHepnsKs7BTNPbnqRzy6x0CSEjfmOteGxmA";
 
 let TOTAL_MODULOS = 0;
 let MODULOS = {};
@@ -457,6 +458,8 @@ function mostrarSeccion(id) {
         b.classList.toggle("activo", b.dataset.sec === id);
     });
 
+    if (id === "evaluacion") prepararSeccionEvaluacion();
+
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -783,16 +786,6 @@ function completarModulo(numero) {
    EVALUACIÓN
    ============================================================ */
 
-function irAEvaluacionOficial() {
-    if (!todosLosModulosCompletos()) {
-        alert("Debes completar el módulo 3 antes de continuar.");
-        return;
-    }
-
-    registrarEvento("inicio_evaluacion_oficial", null);
-    window.open(LINK_EVALUACION_OFICIAL, "_blank");
-}
-
 // Autoevaluación de práctica — NO es la calificación oficial.
 function calificar() {
     const respuestas = RESPUESTAS_QUIZ;
@@ -810,8 +803,438 @@ function calificar() {
     resultado.style.display = "block";
 
     resultado.innerHTML = porcentaje >= 80
-        ? `Buen resultado en la práctica: ${porcentaje}%. Ya puedes continuar a la evaluación final en Microsoft Forms.`
-        : `Resultado de práctica: ${porcentaje}%. Revise nuevamente los contenidos antes de ir a la evaluación final.`;
+        ? `Buen resultado en la práctica: ${porcentaje}%. Cuando te sientas listo(a), presenta la evaluación final al final de esta página.`
+        : `Resultado de práctica: ${porcentaje}%. Revisa nuevamente los contenidos antes de presentar la evaluación final.`;
+}
+
+
+/* ============================================================
+   EVALUACIÓN FINAL (dentro del curso, controlada por Power Automate)
+   - IniciarExamen: {correo, token} -> {permitido, folio, nombre, preguntas:[{id, pregunta, A, B, C, D}]}
+   - EnviarExamen:  {correo, token, folio, respuestas:{ID: letra}} -> {permitido, calificacion, aciertos, total, resultado, m1..m3Total}
+   Las respuestas correctas nunca llegan al navegador.
+   ============================================================ */
+
+let examenActual = null;   // { folio, preguntas, orden:{id:[letras]}, respuestas:{id:letra} }
+let examenEnviando = false;
+
+const MODULOS_EXAMEN = [
+    { clave: "m1", nombre: "Módulo 1 · Marco general del Programa OJT" },
+    { clave: "m2", nombre: "Módulo 2 · Requisitos de implementación" },
+    { clave: "m3", nombre: "Módulo 3 · Proceso de ejecución" }
+];
+
+function claveExamen() {
+    return "examenFinal_" + (obtenerCorreo() || "anonimo");
+}
+
+function leerExamenGuardado() {
+    try {
+        return JSON.parse(localStorage.getItem(claveExamen())) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function guardarExamenLocal(datos) {
+    try {
+        localStorage.setItem(claveExamen(), JSON.stringify(datos));
+    } catch (e) {
+        console.warn("No se pudo guardar el avance del examen:", e);
+    }
+}
+
+function escaparHTML(texto) {
+    return String(texto == null ? "" : texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function barajarLista(lista) {
+    const copia = lista.slice();
+    for (let i = copia.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    return copia;
+}
+
+function contenedorExamen() {
+    return document.getElementById("examenFinal");
+}
+
+function mostrarPractica(mostrar) {
+    const bloque = document.getElementById("bloquePractica");
+    if (bloque) bloque.style.display = mostrar ? "" : "none";
+}
+
+function llamarFlujo(url, cuerpo) {
+    return fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cuerpo)
+    }).then(resp => {
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        return resp.json();
+    });
+}
+
+// Se llama cada vez que el participante entra a la sección Evaluación.
+function prepararSeccionEvaluacion() {
+    const guardado = leerExamenGuardado();
+
+    if (guardado.resultado) {
+        mostrarPractica(false);
+        renderResultadoExamen(guardado.resultado, guardado.folio);
+        return;
+    }
+
+    if (examenActual) {
+        mostrarPractica(false);
+        renderPreguntasExamen();
+        return;
+    }
+
+    mostrarPractica(true);
+    renderIntroExamen(Boolean(guardado.folio));
+}
+
+function renderIntroExamen(enCurso) {
+    contenedorExamen().innerHTML = `
+        <div class="ef-tarjeta ef-tarjeta-final">
+            <span class="ef-etiqueta">Cuenta para tu acreditación</span>
+            <h3>Evaluación final</h3>
+            <p class="ef-texto">Esta es la única evaluación que se toma en cuenta para acreditar el curso. Lee las indicaciones antes de comenzar.</p>
+            <ul class="ef-reglas">
+                <li><strong>10 preguntas</strong>de opción múltiple sobre los 3 módulos.</li>
+                <li><strong>Mínimo aprobatorio: 80/100</strong>Cada pregunta vale 10 puntos.</li>
+                <li><strong>Una sola oportunidad</strong>Una vez enviada, no podrás volver a presentarla.</li>
+                <li><strong>Sin límite de tiempo</strong>Si cierras la página, tus respuestas se conservan en este equipo.</li>
+            </ul>
+            <p class="ef-texto">Al enviar, verás tu resultado en pantalla y recibirás una copia en tu correo institucional.</p>
+            <div class="ef-botones">
+                <button class="btn-principal" id="btnComenzarExamen" onclick="iniciarExamenFinal()">
+                    ${enCurso ? "Continuar evaluación final →" : "Comenzar evaluación final →"}
+                </button>
+            </div>
+        </div>`;
+}
+
+function renderCargandoExamen(mensaje) {
+    contenedorExamen().innerHTML = `
+        <div class="ef-tarjeta">
+            <div class="ef-cargando"><div class="ef-spinner"></div><span>${escaparHTML(mensaje)}</span></div>
+        </div>`;
+}
+
+function renderAvisoExamen(tipo, mensaje, botonTexto, botonAccion) {
+    const boton = botonTexto
+        ? `<div class="ef-botones"><button class="btn-principal" onclick="${botonAccion}">${escaparHTML(botonTexto)}</button></div>`
+        : "";
+    contenedorExamen().innerHTML = `
+        <div class="ef-tarjeta ef-tarjeta-final">
+            <h3>Evaluación final</h3>
+            <div class="ef-aviso ${tipo}">${escaparHTML(mensaje)}</div>
+            ${boton}
+        </div>`;
+}
+
+function volverAIngresar() {
+    cerrarSesion(true);
+    location.reload();
+}
+
+function esMensajeDeSesion(data) {
+    // Las respuestas de sesión inválida o curso cerrado usan "valido": false.
+    return data && data.valido === false;
+}
+
+function iniciarExamenFinal() {
+    if (!todosLosModulosCompletos()) {
+        alert("Debes completar el módulo 3 antes de presentar la evaluación final.");
+        return;
+    }
+
+    mostrarPractica(false);
+    renderCargandoExamen("Preparando tu evaluación… esto puede tardar unos segundos.");
+
+    llamarFlujo(URL_INICIAR_EXAMEN, { correo: obtenerCorreo(), token: obtenerToken() })
+        .then(data => {
+            if (esMensajeDeSesion(data)) {
+                renderAvisoExamen("error", data.mensaje || "Tu sesión ya no es válida. Ingresa de nuevo.",
+                    "Ingresar de nuevo", "volverAIngresar()");
+                return;
+            }
+
+            if (!data || data.permitido !== true || !Array.isArray(data.preguntas)) {
+                const guardado = leerExamenGuardado();
+                if (guardado.resultado) {
+                    renderResultadoExamen(guardado.resultado, guardado.folio);
+                    return;
+                }
+                renderAvisoExamen("info", (data && data.mensaje)
+                    ? data.mensaje
+                    : "No fue posible abrir la evaluación. Intenta de nuevo en unos minutos.");
+                return;
+            }
+
+            const guardado = leerExamenGuardado();
+            const mismoFolio = guardado.folio === data.folio;
+            const orden = mismoFolio && guardado.orden ? guardado.orden : {};
+            const respuestas = mismoFolio && guardado.respuestas ? guardado.respuestas : {};
+
+            data.preguntas.forEach(p => {
+                const disponibles = ["A", "B", "C", "D"].filter(l => p[l] !== undefined && p[l] !== null && String(p[l]).trim() !== "");
+                const previo = orden[p.id];
+                const previoValido = Array.isArray(previo) && previo.length === disponibles.length &&
+                    previo.every(l => disponibles.includes(l));
+                if (!previoValido) orden[p.id] = barajarLista(disponibles);
+            });
+
+            examenActual = {
+                folio: data.folio,
+                preguntas: data.preguntas,
+                orden: orden,
+                respuestas: respuestas
+            };
+
+            guardarExamenLocal({ folio: data.folio, orden: orden, respuestas: respuestas });
+            if (!mismoFolio) registrarEvento("inicio_evaluacion_oficial", null);
+
+            renderPreguntasExamen();
+        })
+        .catch(() => {
+            renderAvisoExamen("error",
+                "No pudimos conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.",
+                "Reintentar", "iniciarExamenFinal()");
+        });
+}
+
+function renderPreguntasExamen() {
+    const ex = examenActual;
+    let html = `
+        <div class="ef-barra-sup">
+            <div class="ef-barra-sup-fila">
+                <span>Evaluación final · Folio <strong>${escaparHTML(ex.folio)}</strong></span>
+                <span id="efContador"></span>
+            </div>
+            <div class="ef-avance"><div id="efAvance" style="width:0%"></div></div>
+        </div>`;
+
+    ex.preguntas.forEach((p, i) => {
+        const opciones = (ex.orden[p.id] || []).map(letra => {
+            const elegida = ex.respuestas[p.id] === letra;
+            return `
+                <label class="ef-opcion${elegida ? " elegida" : ""}">
+                    <input type="radio" name="ef_${escaparHTML(p.id)}" value="${letra}"
+                        ${elegida ? "checked" : ""}
+                        onchange="elegirRespuestaExamen('${escaparHTML(p.id)}', '${letra}', this)">
+                    <span>${escaparHTML(p[letra])}</span>
+                </label>`;
+        }).join("");
+
+        html += `
+            <fieldset class="ef-pregunta${ex.respuestas[p.id] ? " respondida" : ""}" id="efp_${escaparHTML(p.id)}">
+                <legend><span class="ef-num">${i + 1}</span>${escaparHTML(p.pregunta)}</legend>
+                ${opciones}
+            </fieldset>`;
+    });
+
+    html += `
+        <div id="efZonaEnvio">
+            <div class="ef-botones">
+                <button class="btn-principal" id="btnEnviarExamen" onclick="pedirConfirmacionExamen()">Enviar evaluación</button>
+                <span class="ef-texto" id="efFaltan" style="margin:0;"></span>
+            </div>
+        </div>`;
+
+    contenedorExamen().innerHTML = html;
+    actualizarContadorExamen();
+}
+
+function elegirRespuestaExamen(id, letra, input) {
+    if (!examenActual || examenEnviando) return;
+    examenActual.respuestas[id] = letra;
+
+    guardarExamenLocal({
+        folio: examenActual.folio,
+        orden: examenActual.orden,
+        respuestas: examenActual.respuestas
+    });
+
+    const fieldset = document.getElementById("efp_" + id);
+    if (fieldset) {
+        fieldset.classList.add("respondida");
+        fieldset.querySelectorAll(".ef-opcion").forEach(l => l.classList.remove("elegida"));
+    }
+    if (input && input.parentElement) input.parentElement.classList.add("elegida");
+
+    actualizarContadorExamen();
+}
+
+function preguntasSinResponder() {
+    if (!examenActual) return [];
+    return examenActual.preguntas
+        .map((p, i) => ({ id: p.id, numero: i + 1 }))
+        .filter(p => !examenActual.respuestas[p.id]);
+}
+
+function actualizarContadorExamen() {
+    if (!examenActual) return;
+    const total = examenActual.preguntas.length;
+    const faltan = preguntasSinResponder();
+    const respondidas = total - faltan.length;
+
+    const contador = document.getElementById("efContador");
+    const avance = document.getElementById("efAvance");
+    const textoFaltan = document.getElementById("efFaltan");
+    const boton = document.getElementById("btnEnviarExamen");
+
+    if (contador) contador.innerHTML = `Respondidas: <strong>${respondidas} de ${total}</strong>`;
+    if (avance) avance.style.width = Math.round((respondidas / total) * 100) + "%";
+    if (boton) boton.disabled = faltan.length > 0;
+    if (textoFaltan) {
+        textoFaltan.textContent = faltan.length > 0
+            ? `Te falta responder: ${faltan.map(f => f.numero).join(", ")}.`
+            : "Ya respondiste todas las preguntas.";
+    }
+}
+
+function pedirConfirmacionExamen() {
+    if (preguntasSinResponder().length > 0) {
+        actualizarContadorExamen();
+        return;
+    }
+
+    document.getElementById("efZonaEnvio").innerHTML = `
+        <div class="ef-confirmar">
+            <p><strong>¿Enviar tu evaluación final?</strong><br>
+            Una vez enviada no podrás cambiar tus respuestas ni volver a presentarla.</p>
+            <div class="ef-botones">
+                <button class="btn-principal" onclick="enviarExamenFinal()">Sí, enviar</button>
+                <button class="btn-secundario" onclick="cancelarConfirmacionExamen()">Revisar mis respuestas</button>
+            </div>
+        </div>`;
+}
+
+function cancelarConfirmacionExamen() {
+    document.getElementById("efZonaEnvio").innerHTML = `
+        <div class="ef-botones">
+            <button class="btn-principal" id="btnEnviarExamen" onclick="pedirConfirmacionExamen()">Enviar evaluación</button>
+            <span class="ef-texto" id="efFaltan" style="margin:0;"></span>
+        </div>`;
+    actualizarContadorExamen();
+}
+
+function enviarExamenFinal() {
+    if (!examenActual || examenEnviando) return;
+    examenEnviando = true;
+
+    const zona = document.getElementById("efZonaEnvio");
+    zona.innerHTML = `
+        <div class="ef-tarjeta">
+            <div class="ef-cargando"><div class="ef-spinner"></div>
+            <span>Enviando y calificando tu evaluación… no cierres esta página. Puede tardar hasta un minuto.</span></div>
+        </div>`;
+    contenedorExamen().querySelectorAll("input").forEach(i => { i.disabled = true; });
+
+    const folio = examenActual.folio;
+
+    llamarFlujo(URL_ENVIAR_EXAMEN, {
+        correo: obtenerCorreo(),
+        token: obtenerToken(),
+        folio: folio,
+        respuestas: examenActual.respuestas
+    })
+        .then(data => {
+            examenEnviando = false;
+
+            if (esMensajeDeSesion(data)) {
+                renderAvisoExamen("error",
+                    (data.mensaje || "Tu sesión ya no es válida.") +
+                    " Tus respuestas siguen guardadas en este equipo; ingresa de nuevo y vuelve a enviarlas.",
+                    "Ingresar de nuevo", "volverAIngresar()");
+                examenActual = null;
+                return;
+            }
+
+            if (data && data.permitido === true && typeof data.calificacion !== "undefined") {
+                guardarExamenLocal({ folio: data.folio || folio, resultado: data });
+                examenActual = null;
+                registrarEvento("evaluacion_final_enviada", null);
+                renderResultadoExamen(data, data.folio || folio);
+                window.scrollTo({ top: document.getElementById("evaluacion").offsetTop - 10, behavior: "smooth" });
+                return;
+            }
+
+            // Rechazo del servidor (p. ej. ya presentada: puede pasar si se perdió la respuesta de un envío anterior).
+            examenActual = null;
+            renderAvisoExamen("info", (data && data.mensaje)
+                ? data.mensaje + " Revisa tu correo institucional: ahí recibiste tu resultado."
+                : "No fue posible registrar la evaluación. Comunícate con el instructor.");
+        })
+        .catch(() => {
+            examenEnviando = false;
+            contenedorExamen().querySelectorAll("input").forEach(i => { i.disabled = false; });
+            zona.innerHTML = `
+                <div class="ef-aviso error">No pudimos enviar tu evaluación por un problema de conexión.
+                Tus respuestas están guardadas en este equipo. Revisa tu conexión e inténtalo de nuevo.</div>
+                <div class="ef-botones">
+                    <button class="btn-principal" onclick="pedirConfirmacionExamen()">Reintentar envío</button>
+                </div>`;
+        });
+}
+
+function renderResultadoExamen(r, folio) {
+    const calificacion = Number(r.calificacion) || 0;
+    const aprobado = String(r.resultado || "").toUpperCase() === "APROBADO" || calificacion >= 80;
+
+    const modulos = MODULOS_EXAMEN.map(m => {
+        const aciertos = Number(r[m.clave]) || 0;
+        const total = Number(r[m.clave + "Total"]) || 0;
+        const pct = total > 0 ? Math.round((aciertos / total) * 100) : 0;
+        return `
+            <div class="ef-modulo">
+                <div class="ef-modulo-fila"><span>${m.nombre}</span><strong>${aciertos}/${total}</strong></div>
+                <div class="ef-modulo-barra"><div style="width:${pct}%"></div></div>
+            </div>`;
+    }).join("");
+
+    const pasos = aprobado
+        ? `<ul class="ef-pasos">
+                <li>Al cierre del curso, responde la cédula de evaluación.</li>
+                <li>Tu constancia estará disponible en la <a href="https://www.afac-avciv.com/" target="_blank" rel="noopener">Plataforma de Capacitación AFAC</a> de 10 a 15 días hábiles después del cierre administrativo.</li>
+                <li><strong>Importante:</strong> la constancia se descarga una sola vez; guárdala en un lugar seguro.</li>
+           </ul>`
+        : `<ul class="ef-pasos">
+                <li>No alcanzaste la calificación mínima aprobatoria de 80/100.</li>
+                <li>Revisa en el desglose los módulos con menor resultado.</li>
+                <li>Comunícate con el instructor para conocer las opciones disponibles.</li>
+           </ul>`;
+
+    mostrarPractica(false);
+    contenedorExamen().innerHTML = `
+        <div class="ef-tarjeta ef-tarjeta-final">
+            <span class="ef-etiqueta">Evaluación final registrada</span>
+            <h3>Tu resultado</h3>
+            <div class="ef-resultado ${aprobado ? "aprobado" : "no-aprobado"}">
+                <div class="ef-resultado-estado">${aprobado ? "APROBADO" : "NO APROBADO"}</div>
+                <div class="ef-resultado-calif">${calificacion}<span>/100</span></div>
+                <div class="ef-resultado-detalle">${Number(r.aciertos) || 0} de ${Number(r.total) || 0} respuestas correctas · Mínimo aprobatorio: 80</div>
+            </div>
+            <h3 style="font-size:16px;">Resultado por módulo</h3>
+            ${modulos}
+            <h3 style="font-size:16px;margin-top:20px;">Siguientes pasos</h3>
+            ${pasos}
+            <div class="ef-datos">
+                <strong>Folio:</strong> ${escaparHTML(folio || "")}<br>
+                <strong>Correo:</strong> ${escaparHTML(obtenerCorreo() || "")}<br>
+                Te enviamos una copia de este resultado a tu correo institucional.
+            </div>
+        </div>`;
 }
 
 
