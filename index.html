@@ -272,28 +272,35 @@ Cerrar sesión
 
 <span class="ruta-punto-linea" data-linea="2"></span>
 
-<button type="button" class="ruta-punto" data-paso="3" onclick="mostrarPaso(3)" aria-label="Paso 3: Cómo trabajar">
-<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H16"/></svg></span>
-<span class="ruta-punto-etiqueta">Cómo trabajar</span>
+<button type="button" class="ruta-punto" data-paso="3" onclick="mostrarPaso(3)" aria-label="Paso 3: Método de trabajo">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+<span class="ruta-punto-etiqueta">Método de trabajo</span>
 </button>
 
 <span class="ruta-punto-linea" data-linea="3"></span>
 
-<button type="button" class="ruta-punto" data-paso="4" onclick="mostrarPaso(4)" aria-label="Paso 4: Recursos">
-<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5a2 2 0 0 1 2-2h3.4l1.8 2H18a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6.5Z"/></svg></span>
-<span class="ruta-punto-etiqueta">Recursos</span>
+<button type="button" class="ruta-punto" data-paso="4" onclick="mostrarPaso(4)" aria-label="Paso 4: Reglas">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.6 7 9.5 4-1.9 7-5.2 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+<span class="ruta-punto-etiqueta">Reglas</span>
 </button>
 
 <span class="ruta-punto-linea" data-linea="4"></span>
 
-<button type="button" class="ruta-punto" data-paso="5" onclick="mostrarPaso(5)" aria-label="Paso 5: Evaluación">
+<button type="button" class="ruta-punto" data-paso="5" onclick="mostrarPaso(5)" aria-label="Paso 5: Recursos">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5a2 2 0 0 1 2-2h3.4l1.8 2H18a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6.5Z"/></svg></span>
+<span class="ruta-punto-etiqueta">Recursos</span>
+</button>
+
+<span class="ruta-punto-linea" data-linea="5"></span>
+
+<button type="button" class="ruta-punto" data-paso="6" onclick="mostrarPaso(6)" aria-label="Paso 6: Evaluación">
 <span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1v1H8v-1a1 1 0 0 1 1-1Z"/><path d="M8.5 13 11 15.5 15.5 10.5"/></svg></span>
 <span class="ruta-punto-etiqueta">Evaluación</span>
 </button>
 
 </nav>
 
-<p class="ruta-embarque-contador" id="rutaContador">Paso 1 de 5 · Bienvenida</p>
+<p class="ruta-embarque-contador" id="rutaContador">Paso 1 de 6 · Bienvenida</p>
 
 <div class="paso-tour activo" id="paso1">
 <div class="bienvenida-fila">
@@ -396,11 +403,9 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 </div>
 
 <div class="paso-tour" id="paso3">
-<h3>Cómo trabajar</h3>
+<h3>Método de trabajo</h3>
 
-<p class="subtitulo-hero">Así vas a trabajar durante el curso y lo que necesitas para aprovecharlo.</p>
-
-<p class="paso1-lead">Método de trabajo</p>
+<p class="subtitulo-hero">Así vas a trabajar durante el curso.</p>
 
 <div class="metodo-datos">
 
@@ -442,7 +447,12 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 <li><strong>Cierra el curso</strong><span>Con la práctica de llenado y la evaluación final.</span></li>
 
 </ol>
-<p class="paso1-lead" style="margin-top:28px;">Reglas</p>
+
+</div>
+
+<div class="paso-tour" id="paso4">
+
+<h3>Reglas</h3>
 
 <p class="subtitulo-hero">Para aprovechar al máximo tu capacitación.</p>
 
@@ -501,7 +511,7 @@ seguridad operacional del Estado Mexicano.
 </div>
 </div>
 
-<div class="paso-tour" id="paso4">
+<div class="paso-tour" id="paso5">
 <h3>Recursos de apoyo</h3>
 
 <p class="subtitulo-hero">Disponibles en todo momento dentro del curso.</p>
@@ -539,7 +549,7 @@ seguridad operacional del Estado Mexicano.
 </ul>
 </div>
 
-<div class="paso-tour" id="paso5">
+<div class="paso-tour" id="paso6">
 <h3>Evaluación</h3>
 
 <p class="subtitulo-hero">Cómo se valora tu aprendizaje.</p>
@@ -862,6 +872,6 @@ Correo: jose.figueroa@afac.gob.mx
 
 </div>
 
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
