@@ -1431,8 +1431,6 @@ function intentarEmparejarDinamica() {
         if (hechos === total) {
             const msg = document.getElementById("dinamicaCompleta");
             if (msg) msg.style.display = "block";
-            const conclusiones = document.getElementById("dinamicaConclusiones");
-            if (conclusiones) conclusiones.style.display = "flex";
             habilitarBotonCompletar(moduloEnPantalla);
         }
     } else {
@@ -1568,8 +1566,6 @@ function verificarVerdaderoFalso() {
 
     if (pct >= 80) {
         habilitarBotonCompletar(moduloEnPantalla);
-        const conclusiones = document.getElementById("modulo2Conclusiones");
-        if (conclusiones) conclusiones.style.display = "flex";
     }
 }
 
