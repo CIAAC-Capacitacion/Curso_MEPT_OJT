@@ -51,12 +51,13 @@
 .silabo-m2 .silabo-pill{background:var(--azul-medio,#1B4A78)}
 .silabo-m3 .silabo-pill{background:var(--oro,#B98A2E)}
 /* ===== Menú de 7 pasos: ocupa todo el ancho, sin desplazamiento ===== */
-.ruta-embarque{display:flex;align-items:flex-start;justify-content:space-between;width:100%;max-width:100%;overflow:visible;gap:0;padding:4px 0 2px}
+.ruta-embarque{display:flex;align-items:flex-start;justify-content:space-between;width:100%;max-width:760px;margin-left:auto;margin-right:auto;overflow:visible;gap:0;padding:4px 0 2px}
 .ruta-embarque .ruta-punto{flex:0 0 auto;width:92px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0}
 .ruta-embarque .ruta-punto-icono{width:44px;height:44px;flex:0 0 44px}
 .ruta-embarque .ruta-punto-etiqueta{display:block;width:100%;white-space:normal;text-align:center;line-height:1.25;min-height:2.5em}
 .ruta-embarque .ruta-punto-linea{flex:1 1 auto;min-width:8px;max-width:none;margin:21px -14px 0;align-self:flex-start}
 @media (max-width:760px){.ruta-embarque .ruta-punto{width:64px}.ruta-embarque .ruta-punto-etiqueta{font-size:10.5px}.ruta-embarque .ruta-punto-icono{width:36px;height:36px;flex-basis:36px}.ruta-embarque .ruta-punto-linea{margin:17px -8px 0}}
+@media (max-width:480px){.ruta-embarque .ruta-punto{width:40px}.ruta-embarque .ruta-punto-etiqueta{display:none}.ruta-embarque .ruta-punto-linea{margin:17px -2px 0}}
 /* ===== Móvil: modal centrado y menú de usuario visible ===== */
 .header-usuario{z-index:60}
 .menu-usuario{z-index:60}
