@@ -501,7 +501,6 @@ function renderRuta() {
             <div class="marcador ${marcadorClase}">${marcadorContenido}</div>
             <div class="modulo-cuerpo">
                 <h3>${m.titulo}</h3>
-                <p>${m.resumen}</p>
                 <button class="${desbloqueado ? 'desbloqueado' : ''}" ${desbloqueado ? '' : 'disabled'} onclick="abrirModulo(${n})">
                     ${!desbloqueado ? 'Bloqueado' : (completo ? 'Repasar' : 'Ingresar')}
                 </button>
