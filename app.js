@@ -611,7 +611,7 @@ function abrirModulo(numero) {
             </div>
 
             <div class="objetivo-desempeno">
-                <span class="objetivo-desempeno-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>
+                <span class="objetivo-desempeno-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="m4.5 14.5 3.2 2.3c.6.4 1.4.5 2.1.2l10-4.6c1.2-.6 1.6-2 .8-3-.6-.8-1.7-1-2.6-.6l-3.3 1.5-5.4-3.8-2 .9 3.2 4.3-3 1.4-2.4-1.3-1.4.6.8 2.1Z"/></svg></span>
                 <div>
                     <span>Al terminar podrás</span>
                     <p>${m.objetivo_desempeno}</p>
