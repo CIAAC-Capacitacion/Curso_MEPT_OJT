@@ -1656,3 +1656,28 @@ function verificarFormatoBitacora() {
     }
 }
 
+
+/* ============================================================
+   ACCESO — ENVIAR CON LA TECLA ENTER
+   En el campo de correo, Enter = "Enviar código".
+   En el campo de código, Enter = "Confirmar".
+   Si el botón está deshabilitado (enviando/verificando), no hace nada,
+   para evitar envíos dobles.
+   ============================================================ */
+
+(function activarEnterEnAcceso() {
+    function conEnter(idInput, idBoton, accion) {
+        const input = document.getElementById(idInput);
+        if (!input) return;
+        input.addEventListener("keydown", function (e) {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            const boton = document.getElementById(idBoton);
+            if (boton && boton.disabled) return;
+            accion();
+        });
+    }
+
+    conEnter("inputCorreo", "btnEnviarCodigo", solicitarCodigo);
+    conEnter("inputCodigo", "btnConfirmarCodigo", confirmarCodigo);
+})();
