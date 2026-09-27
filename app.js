@@ -678,6 +678,7 @@ function barajarDinamicaEmparejar() {
     const contenedor = document.querySelector(".dinamica-columnas");
     if (!contenedor) return;
 
+    const titulos = Array.from(contenedor.querySelectorAll(".dinamica-col-titulo"));
     const figuras = Array.from(contenedor.querySelectorAll(".figura-btn"));
     const funciones = Array.from(contenedor.querySelectorAll(".funcion-btn"));
     if (!figuras.length || !funciones.length) return;
@@ -693,39 +694,14 @@ function barajarDinamicaEmparejar() {
     const figurasBarajadas = barajar(figuras);
     const funcionesBarajadas = barajar(funciones);
 
+    // Se intercalan figura/situación para que cada fila tenga la misma altura
+    // en ambas columnas; en móvil el CSS reordena en dos listas.
     contenedor.innerHTML = "";
+    titulos.forEach(t => contenedor.appendChild(t));
     for (let i = 0; i < figurasBarajadas.length; i++) {
         contenedor.appendChild(figurasBarajadas[i]);
         contenedor.appendChild(funcionesBarajadas[i]);
     }
-
-    colorearDinamicaAleatoria(figurasBarajadas, funcionesBarajadas);
-}
-
-const PALETA_FIGURAS = ["#185FA5", "#993556", "#0E2A47", "#0F6E56", "#534AB7", "#993C1D"];
-const PALETA_SITUACIONES = ["#B98A2E", "#0F766E", "#7C3F9E", "#B5541D", "#1D6FA5", "#5B6E3F"];
-
-function colorearDinamicaAleatoria(figuras, funciones) {
-    const barajar = (arr) => {
-        const copia = [...arr];
-        for (let i = copia.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [copia[i], copia[j]] = [copia[j], copia[i]];
-        }
-        return copia;
-    };
-
-    const coloresFiguras = barajar(PALETA_FIGURAS);
-    const coloresSituaciones = barajar(PALETA_SITUACIONES);
-
-    figuras.forEach((btn, i) => {
-        const icono = btn.querySelector(".dinamica-icono");
-        if (icono) icono.style.setProperty("--color-icono", coloresFiguras[i % coloresFiguras.length]);
-    });
-    funciones.forEach((btn, i) => {
-        const icono = btn.querySelector(".dinamica-icono");
-        if (icono) icono.style.setProperty("--color-icono", coloresSituaciones[i % coloresSituaciones.length]);
-    });
 }
 
 function alternarAcordeon(boton) {
@@ -1427,6 +1403,8 @@ function intentarEmparejarDinamica() {
         const hechos = document.querySelectorAll(".figura-btn.emparejado").length;
         const contador = document.getElementById("dinamicaProgreso");
         if (contador) contador.textContent = `${hechos} de ${total} emparejados`;
+        const barra = document.getElementById("dinamicaBarra");
+        if (barra) barra.style.width = `${(hechos / total) * 100}%`;
 
         if (hechos === total) {
             const msg = document.getElementById("dinamicaCompleta");
