@@ -265,52 +265,37 @@ Cerrar sesión
 
 <span class="ruta-punto-linea" data-linea="1"></span>
 
-<button type="button" class="ruta-punto" data-paso="2" onclick="mostrarPaso(2)" aria-label="Paso 2: Contenido temático">
+<button type="button" class="ruta-punto" data-paso="2" onclick="mostrarPaso(2)" aria-label="Paso 2: Contenido y objetivos">
 <span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span>
-<span class="ruta-punto-etiqueta">Contenido temático</span>
+<span class="ruta-punto-etiqueta">Contenido y objetivos</span>
 </button>
 
 <span class="ruta-punto-linea" data-linea="2"></span>
 
-<button type="button" class="ruta-punto" data-paso="3" onclick="mostrarPaso(3)" aria-label="Paso 3: Objetivo general">
-<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V3"/><path d="M6 4h11l-2.6 3.6L17 11H6"/></svg></span>
-<span class="ruta-punto-etiqueta">Objetivo general</span>
+<button type="button" class="ruta-punto" data-paso="3" onclick="mostrarPaso(3)" aria-label="Paso 3: Cómo trabajar">
+<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8.5a3.5 3.5 0 0 0 0-7h-9a3.5 3.5 0 0 1 0-7H16"/></svg></span>
+<span class="ruta-punto-etiqueta">Cómo trabajar</span>
 </button>
 
 <span class="ruta-punto-linea" data-linea="3"></span>
 
-<button type="button" class="ruta-punto" data-paso="4" onclick="mostrarPaso(4)" aria-label="Paso 4: Método de trabajo">
-<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
-<span class="ruta-punto-etiqueta">Método de trabajo</span>
-</button>
-
-<span class="ruta-punto-linea" data-linea="4"></span>
-
-<button type="button" class="ruta-punto" data-paso="5" onclick="mostrarPaso(5)" aria-label="Paso 5: Reglas">
-<span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5.5c0 4.3 3 7.6 7 9.5 4-1.9 7-5.2 7-9.5V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
-<span class="ruta-punto-etiqueta">Reglas</span>
-</button>
-
-<span class="ruta-punto-linea" data-linea="5"></span>
-
-<button type="button" class="ruta-punto" data-paso="6" onclick="mostrarPaso(6)" aria-label="Paso 6: Recursos">
+<button type="button" class="ruta-punto" data-paso="4" onclick="mostrarPaso(4)" aria-label="Paso 4: Recursos">
 <span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5a2 2 0 0 1 2-2h3.4l1.8 2H18a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6.5Z"/></svg></span>
 <span class="ruta-punto-etiqueta">Recursos</span>
 </button>
 
-<span class="ruta-punto-linea" data-linea="6"></span>
+<span class="ruta-punto-linea" data-linea="4"></span>
 
-<button type="button" class="ruta-punto" data-paso="7" onclick="mostrarPaso(7)" aria-label="Paso 7: Evaluación">
+<button type="button" class="ruta-punto" data-paso="5" onclick="mostrarPaso(5)" aria-label="Paso 5: Evaluación">
 <span class="ruta-punto-icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1v1H8v-1a1 1 0 0 1 1-1Z"/><path d="M8.5 13 11 15.5 15.5 10.5"/></svg></span>
 <span class="ruta-punto-etiqueta">Evaluación</span>
 </button>
 
 </nav>
 
-<p class="ruta-embarque-contador" id="rutaContador">Paso 1 de 7 · Bienvenida</p>
+<p class="ruta-embarque-contador" id="rutaContador">Paso 1 de 5 · Bienvenida</p>
 
 <div class="paso-tour activo" id="paso1">
-
 <div class="bienvenida-fila">
 
 <img src="bienvenida.png" alt="Ilustración de bienvenida al curso" class="bienvenida-imagen">
@@ -348,12 +333,12 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 </p>
 
 </div>
-
 </div>
 
 <div class="paso-tour" id="paso2">
+<h3>Contenido y objetivos</h3>
 
-<h3>Contenido temático</h3>
+<p class="paso1-lead">Contenido temático</p>
 
 <ul class="silabo-tarjetas">
 
@@ -383,13 +368,8 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 
 </ul>
 
-</div>
 
-<div class="paso-tour" id="paso3">
-
-<h3>Objetivos del curso</h3>
-
-<p class="paso1-lead">Objetivo general</p>
+<p class="paso1-lead" style="margin-top:24px;">Objetivo general</p>
 
 <p>Dado un <strong>caso práctico</strong>, distinguir la aplicación del Programa de Entrenamiento en el Puesto de Trabajo conforme al <strong>MEPT R06</strong>.</p>
 
@@ -413,14 +393,14 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 </li>
 
 </ul>
-
 </div>
 
-<div class="paso-tour" id="paso4">
+<div class="paso-tour" id="paso3">
+<h3>Cómo trabajar</h3>
 
-<h3>Método de trabajo</h3>
+<p class="subtitulo-hero">Así vas a trabajar durante el curso y lo que necesitas para aprovecharlo.</p>
 
-<p class="subtitulo-hero">Así vas a trabajar durante el curso.</p>
+<p class="paso1-lead">Método de trabajo</p>
 
 <div class="metodo-datos">
 
@@ -462,12 +442,7 @@ Tu compromiso y participación activa son clave para el éxito de este programa.
 <li><strong>Cierra el curso</strong><span>Con la práctica de llenado y la evaluación final.</span></li>
 
 </ol>
-
-</div>
-
-<div class="paso-tour" id="paso5">
-
-<h3>Reglas</h3>
+<p class="paso1-lead" style="margin-top:28px;">Reglas</p>
 
 <p class="subtitulo-hero">Para aprovechar al máximo tu capacitación.</p>
 
@@ -524,11 +499,9 @@ seguridad operacional del Estado Mexicano.
 </p>
 
 </div>
-
 </div>
 
-<div class="paso-tour" id="paso6">
-
+<div class="paso-tour" id="paso4">
 <h3>Recursos de apoyo</h3>
 
 <p class="subtitulo-hero">Disponibles en todo momento dentro del curso.</p>
@@ -564,13 +537,9 @@ seguridad operacional del Estado Mexicano.
 
 
 </ul>
-
-
-
 </div>
 
-<div class="paso-tour" id="paso7">
-
+<div class="paso-tour" id="paso5">
 <h3>Evaluación</h3>
 
 <p class="subtitulo-hero">Cómo se valora tu aprendizaje.</p>
@@ -595,7 +564,6 @@ seguridad operacional del Estado Mexicano.
 </ul>
 
 <p style="font-size:12.5px;color:var(--texto-suave);margin-top:14px;">Se invita al participante a iniciar el presente curso con el compromiso y la disciplina que este proceso formativo requiere.</p>
-
 </div>
 
 <div class="tour-botones">
@@ -894,6 +862,6 @@ Correo: jose.figueroa@afac.gob.mx
 
 </div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
