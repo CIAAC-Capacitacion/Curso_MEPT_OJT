@@ -983,7 +983,14 @@ function iniciarExamenFinal() {
             const guardado = leerExamenGuardado();
             const mismoFolio = guardado.folio === data.folio;
             const orden = mismoFolio && guardado.orden ? guardado.orden : {};
-            const respuestas = mismoFolio && guardado.respuestas ? guardado.respuestas : {};
+            const respuestasPrevias = mismoFolio && guardado.respuestas ? guardado.respuestas : {};
+
+            // Solo se conservan respuestas de las preguntas que el flujo asignó ahora
+            // (si la asignación cambió, lo guardado de antes se descarta).
+            const respuestas = {};
+            data.preguntas.forEach(p => {
+                if (respuestasPrevias[p.id]) respuestas[p.id] = respuestasPrevias[p.id];
+            });
 
             data.preguntas.forEach(p => {
                 const disponibles = ["A", "B", "C", "D"].filter(l => p[l] !== undefined && p[l] !== null && String(p[l]).trim() !== "");
@@ -1017,7 +1024,7 @@ function renderPreguntasExamen() {
     let html = `
         <div class="ef-barra-sup">
             <div class="ef-barra-sup-fila">
-                <span>Evaluación final · Folio <strong>${escaparHTML(ex.folio)}</strong></span>
+                <span><strong>Evaluación final</strong></span>
                 <span id="efContador"></span>
             </div>
             <div class="ef-avance"><div id="efAvance" style="width:0%"></div></div>
@@ -1229,10 +1236,13 @@ function renderResultadoExamen(r, folio) {
             <h3 style="font-size:16px;margin-top:20px;">Siguientes pasos</h3>
             ${pasos}
             <div class="ef-datos">
-                <strong>Folio:</strong> ${escaparHTML(folio || "")}<br>
                 <strong>Correo:</strong> ${escaparHTML(obtenerCorreo() || "")}<br>
                 Te enviamos una copia de este resultado a tu correo institucional.
             </div>
+            <p class="ef-texto" style="margin-top:14px;font-size:13.5px;">
+                ¿El instructor te autorizó un nuevo intento?
+                <a href="#" onclick="iniciarExamenFinal(); return false;">Abrir la evaluación de nuevo</a>
+            </p>
         </div>`;
 }
 
