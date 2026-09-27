@@ -1239,10 +1239,6 @@ function renderResultadoExamen(r, folio) {
                 <strong>Correo:</strong> ${escaparHTML(obtenerCorreo() || "")}<br>
                 Te enviamos una copia de este resultado a tu correo institucional.
             </div>
-            <p class="ef-texto" style="margin-top:14px;font-size:13.5px;">
-                ¿El instructor te autorizó un nuevo intento?
-                <a href="#" onclick="iniciarExamenFinal(); return false;">Abrir la evaluación de nuevo</a>
-            </p>
         </div>`;
 }
 
