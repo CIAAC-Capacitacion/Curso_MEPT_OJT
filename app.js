@@ -1188,6 +1188,33 @@ function renderResultadoExamen(r, folio) {
            </ul>`
         : "";
 
+    // Retroalimentación: todas las preguntas del examen (la envía EnviarExamen en "revision").
+    // Correcta: pregunta + su respuesta en verde.
+    // Incorrecta: pregunta + su respuesta en rojo + la correcta en verde + justificación.
+    const lista = Array.isArray(r.revision) ? r.revision : [];
+    const opcion = (clase, icono, texto, nota) =>
+        `<div class="ef-rev-op ${clase}"><span class="ef-rev-ico">${icono}</span><span class="ef-rev-txt">${escaparHTML(texto || "")}<em>${nota}</em></span></div>`;
+    const revision = lista.length
+        ? `<h3 style="font-size:16px;margin-top:22px;">Revisión de tu evaluación</h3>
+           <p class="ef-texto" style="margin-bottom:10px;">En verde las preguntas que respondiste correctamente y en rojo las incorrectas, con la respuesta correcta y su justificación.</p>
+           ${lista.map((q, i) => {
+                const correcta = String(q.correcta || "").trim().toUpperCase();
+                const elegida = String(q.tu || "").trim().toUpperCase();
+                const acerto = elegida !== "" && elegida === correcta;
+                const cuerpo = acerto
+                    ? opcion("bien", "✓", q[correcta], "Tu respuesta")
+                    : (elegida && q[elegida] ? opcion("mal", "✗", q[elegida], "Tu respuesta") : opcion("mal", "✗", "Sin respuesta", "Tu respuesta"))
+                      + opcion("bien", "✓", q[correcta], "Respuesta correcta")
+                      + (q.justificacion ? `<div class="ef-rev-just"><strong>Justificación:</strong> ${escaparHTML(q.justificacion)}</div>` : "");
+                return `
+            <div class="ef-rev ${acerto ? "ef-rev-ok" : "ef-rev-error"}">
+                <div class="ef-rev-cab"><span class="ef-rev-etq">${acerto ? "✓ Correcta" : "✗ Incorrecta"}</span></div>
+                <div class="ef-rev-preg"><span class="ef-num">${i + 1}</span>${escaparHTML(q.pregunta || "")}</div>
+                ${cuerpo}
+            </div>`;
+           }).join("")}`
+        : "";
+
     mostrarPractica(false);
     contenedorExamen().innerHTML = `
         <div class="ef-tarjeta ef-tarjeta-final">
@@ -1199,6 +1226,7 @@ function renderResultadoExamen(r, folio) {
                 <div class="ef-resultado-detalle">${Number(r.aciertos) || 0} de ${Number(r.total) || 0} respuestas correctas · Mínimo aprobatorio: 80</div>
             </div>
             ${pasos}
+            ${revision}
             <div class="ef-datos">
                 <strong>Correo:</strong> ${escaparHTML(obtenerCorreo() || "")}<br>
                 Te enviamos una copia de este resultado a tu correo institucional.<br>
