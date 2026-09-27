@@ -1178,28 +1178,15 @@ function renderResultadoExamen(r, folio) {
     const calificacion = Number(r.calificacion) || 0;
     const aprobado = String(r.resultado || "").toUpperCase() === "APROBADO" || calificacion >= 80;
 
-    const modulos = MODULOS_EXAMEN.map(m => {
-        const aciertos = Number(r[m.clave]) || 0;
-        const total = Number(r[m.clave + "Total"]) || 0;
-        const pct = total > 0 ? Math.round((aciertos / total) * 100) : 0;
-        return `
-            <div class="ef-modulo">
-                <div class="ef-modulo-fila"><span>${m.nombre}</span><strong>${aciertos}/${total}</strong></div>
-                <div class="ef-modulo-barra"><div style="width:${pct}%"></div></div>
-            </div>`;
-    }).join("");
-
+    // Siguientes pasos: solo cuando se aprueba.
     const pasos = aprobado
-        ? `<ul class="ef-pasos">
-                <li>Al cierre del curso, responde la cédula de evaluación.</li>
-                <li>Tu constancia estará disponible en la <a href="https://www.afac-avciv.com/" target="_blank" rel="noopener">Plataforma de Capacitación AFAC</a> de 10 a 15 días hábiles después del cierre administrativo.</li>
+        ? `<h3 style="font-size:16px;margin-top:20px;">Siguientes pasos</h3>
+           <ul class="ef-pasos">
+                <li>Al cierre del curso, responde la cédula de reacción.</li>
+                <li>Tu constancia estará disponible en la <a href="https://afac-avciv.com/" target="_blank" rel="noopener">Plataforma de Capacitación AFAC</a> de 10 a 15 días hábiles después del cierre administrativo.</li>
                 <li><strong>Importante:</strong> la constancia se descarga una sola vez; guárdala en un lugar seguro.</li>
            </ul>`
-        : `<ul class="ef-pasos">
-                <li>No alcanzaste la calificación mínima aprobatoria de 80/100.</li>
-                <li>Revisa en el desglose los módulos con menor resultado.</li>
-                <li>Comunícate con el instructor para conocer las opciones disponibles.</li>
-           </ul>`;
+        : "";
 
     mostrarPractica(false);
     contenedorExamen().innerHTML = `
@@ -1211,13 +1198,11 @@ function renderResultadoExamen(r, folio) {
                 <div class="ef-resultado-calif">${calificacion}<span>/100</span></div>
                 <div class="ef-resultado-detalle">${Number(r.aciertos) || 0} de ${Number(r.total) || 0} respuestas correctas · Mínimo aprobatorio: 80</div>
             </div>
-            <h3 style="font-size:16px;">Resultado por módulo</h3>
-            ${modulos}
-            <h3 style="font-size:16px;margin-top:20px;">Siguientes pasos</h3>
             ${pasos}
             <div class="ef-datos">
                 <strong>Correo:</strong> ${escaparHTML(obtenerCorreo() || "")}<br>
-                Te enviamos una copia de este resultado a tu correo institucional.
+                Te enviamos una copia de este resultado a tu correo institucional.<br>
+                Si tienes dudas, comunícate con el instructor.
             </div>
         </div>`;
 }
