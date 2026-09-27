@@ -25,7 +25,7 @@ let moduloEnPantalla = null;
 let RESPUESTAS_QUIZ = {};
 
 function cargarContenidoCurso() {
-    return fetch("contenido-curso.json")
+    return fetch("contenido-curso.json", { cache: "no-cache" })
         .then(resp => resp.json())
         .then(data => {
             MODULOS = data.modulos || {};
