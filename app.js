@@ -1,3 +1,6 @@
+// Respuestas de la Actividad 2.1 (se declara aquí para que exista antes de abrir cualquier módulo)
+const caso21Respuestas = {};
+
 /* ============================================================
    CONFIGURACIÓN — AJUSTA ESTOS VALORES
    ============================================================ */
@@ -670,6 +673,7 @@ function abrirModulo(numero) {
 
     barajarDinamicaEmparejar();
     barajarIncumplimientos();
+    Object.keys(caso21Respuestas).forEach(k => delete caso21Respuestas[k]);
     barajarVerdaderoFalso();
     contenido.scrollIntoView({ behavior: "smooth" });
 }
@@ -1490,6 +1494,61 @@ function verificarIncumplimientos() {
     if (correctas === totalCorrectas && marcadas === totalCorrectas) {
         desbloquearActividad22();
     }
+}
+
+/* ============================================================
+   ACTIVIDAD 2.1 · CASO DEL REGISTRO DE ANA (Módulo 2)
+   ============================================================ */
+
+function caso21Elegir(nivel, cumple) {
+    caso21Respuestas[nivel] = cumple;
+    const tarjeta = document.getElementById("caso21Nivel" + nivel);
+    if (!tarjeta) return;
+    tarjeta.querySelectorAll(".b").forEach(b => b.classList.remove("on"));
+    tarjeta.querySelector(cumple ? ".ok" : ".no").classList.add("on");
+}
+
+function verificarCaso21() {
+    const tarjetas = document.querySelectorAll(".act21 .lv");
+    let puntos = 0;
+    const total = tarjetas.length + 1;
+
+    tarjetas.forEach((tarjeta, i) => {
+        const cumple = tarjeta.dataset.ok === "1";
+        const elegida = caso21Respuestas[i];
+        const acerto = elegida !== undefined && elegida === (cumple ? 1 : 0);
+        if (acerto) puntos++;
+
+        tarjeta.classList.remove("good", "bad");
+        tarjeta.classList.add("show", acerto ? "good" : "bad");
+        const titulo = tarjeta.querySelector(".fbt");
+        if (titulo) {
+            const inicio = elegida === undefined ? "Sin respuesta. " : (acerto ? "¡Correcto! " : "Revisa: ");
+            titulo.textContent = inicio + (cumple ? "Este nivel sí cumple." : "Este nivel no cumple.");
+        }
+    });
+
+    const elegida = document.querySelector(".act21 input[name='caso21Decision']:checked");
+    document.querySelectorAll(".act21 .opt").forEach(op => {
+        op.classList.remove("right", "wrong");
+        if (op.dataset.ok === "1") op.classList.add("right");
+    });
+    if (elegida) {
+        const op = elegida.closest(".opt");
+        if (op.dataset.ok === "1") puntos++;
+        else op.classList.add("wrong");
+    }
+
+    const completo = puntos === total;
+    const resultado = document.getElementById("caso21Resultado");
+    if (resultado) {
+        resultado.classList.toggle("completo", completo);
+        resultado.textContent = `Resultado: ${puntos} de ${total} · ` + (completo
+            ? "¡Excelente! Identificaste todos los incumplimientos."
+            : "Revisa la retroalimentación de cada nivel y vuelve a intentarlo.");
+    }
+
+    if (completo) desbloquearActividad22();
 }
 
 function desbloquearActividad22() {
