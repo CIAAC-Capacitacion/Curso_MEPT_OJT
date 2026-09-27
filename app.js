@@ -1180,12 +1180,12 @@ function renderResultadoExamen(r, folio) {
 
     // Siguientes pasos: solo cuando se aprueba.
     const pasos = aprobado
-        ? `<h3 style="font-size:16px;margin-top:20px;">Siguientes pasos</h3>
-           <ul class="ef-pasos">
-                <li>Al cierre del curso, responde la cédula de reacción.</li>
-                <li>Tu constancia estará disponible en la <a href="https://afac-avciv.com/" target="_blank" rel="noopener">Plataforma de Capacitación AFAC</a> de 10 a 15 días hábiles después del cierre administrativo.</li>
+        ? `<h3 style="font-size:16px;margin-top:20px;">Siguientes pasos para obtener tu constancia</h3>
+           <ol class="ef-pasos">
+                <li>Tu constancia estará disponible en la <a href="https://afac-avciv.com/" target="_blank" rel="noopener">Plataforma de Capacitación AFAC</a> <strong>10 días hábiles después del cierre administrativo</strong> del curso.</li>
+                <li>Para descargarla, primero deberás <strong>responder la cédula de reacción</strong> en la misma plataforma.</li>
                 <li><strong>Importante:</strong> la constancia se descarga una sola vez; guárdala en un lugar seguro.</li>
-           </ul>`
+           </ol>`
         : "";
 
     // Retroalimentación: todas las preguntas del examen (la envía EnviarExamen en "revision").
