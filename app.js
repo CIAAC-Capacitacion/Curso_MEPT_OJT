@@ -1548,7 +1548,7 @@ function verificarCaso21() {
             : "Revisa la retroalimentación de cada nivel y vuelve a intentarlo.");
     }
 
-    if (completo) desbloquearActividad22();
+    if (completo) habilitarBotonCompletar(moduloEnPantalla);
 }
 
 function desbloquearActividad22() {
