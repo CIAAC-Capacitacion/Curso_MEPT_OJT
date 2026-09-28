@@ -1281,7 +1281,6 @@ function renderResultadoExamen(r, folio) {
             </div>`;
            }).join("")}
            <div class="ef-cerrar-rev">
-                <p>Cuando termines de revisar, cierra la revisión. Después ya no podrás volver a consultarla.</p>
                 <button type="button" class="btn-principal" onclick="cerrarRevisionExamen()">Terminar revisión</button>
            </div>`
         : "";
