@@ -675,6 +675,7 @@ function abrirModulo(numero) {
     barajarIncumplimientos();
     Object.keys(caso21Respuestas).forEach(k => delete caso21Respuestas[k]);
     barajarVerdaderoFalso();
+    iniciarActividad31();
     contenido.scrollIntoView({ behavior: "smooth" });
 }
 
@@ -765,6 +766,28 @@ function completarModulo(numero) {
    EVALUACIÓN
    ============================================================ */
 
+// Baraja el orden de las preguntas de práctica y de sus opciones (una vez por carga de página).
+// La calificación no depende del orden: se revisa por el nombre (p1, p2…) y el valor (a, b, c).
+let practicaBarajada = false;
+function barajarPractica() {
+    if (practicaBarajada) return;
+    const quiz = document.getElementById("quiz");
+    if (!quiz) return;
+    const preguntas = Array.from(quiz.querySelectorAll(".pregunta"));
+    if (!preguntas.length) return;
+    const referencia = preguntas[preguntas.length - 1].nextSibling;   // lo que sigue (botón Calificar)
+    barajarLista(preguntas).forEach((div, i) => {
+        // Opciones en orden aleatorio
+        const opciones = Array.from(div.querySelectorAll("label"));
+        barajarLista(opciones).forEach(op => div.appendChild(op));
+        // Renumerar la pregunta según su nueva posición
+        const titulo = div.querySelector("h3");
+        if (titulo) titulo.textContent = titulo.textContent.trim().replace(/^\d+\.\s*/, (i + 1) + ". ");
+        quiz.insertBefore(div, referencia);
+    });
+    practicaBarajada = true;
+}
+
 // Autoevaluación de práctica — NO es la calificación oficial.
 function calificar() {
     const respuestas = RESPUESTAS_QUIZ;
@@ -848,6 +871,7 @@ function contenedorExamen() {
 function mostrarPractica(mostrar) {
     const bloque = document.getElementById("bloquePractica");
     if (bloque) bloque.style.display = mostrar ? "" : "none";
+    if (mostrar) barajarPractica();
 }
 
 function llamarFlujo(url, cuerpo) {
@@ -1148,7 +1172,11 @@ function enviarExamenFinal() {
             }
 
             if (data && data.permitido === true && typeof data.calificacion !== "undefined") {
-                guardarExamenLocal({ folio: data.folio || folio, resultado: data });
+                // Se guarda el resultado SIN la revisión: la revisión de preguntas solo se ve una vez,
+                // al enviar. Si el participante sale y vuelve a entrar, solo verá su resultado.
+                const resultadoGuardado = Object.assign({}, data);
+                delete resultadoGuardado.revision;
+                guardarExamenLocal({ folio: data.folio || folio, resultado: resultadoGuardado });
                 examenActual = null;
                 registrarEvento("evaluacion_final_enviada", null);
                 renderResultadoExamen(data, data.folio || folio);
@@ -1174,6 +1202,25 @@ function enviarExamenFinal() {
         });
 }
 
+// Último resultado mostrado (para cerrar la revisión y pasar a la tarjeta de agradecimiento).
+let ultimoResultadoExamen = null;
+
+// Botón "Salir del curso" de la tarjeta de agradecimiento: cierra la sesión sin preguntar
+// y regresa a la pantalla de acceso. El avance y el resultado guardados no se borran.
+function salirDelCurso() {
+    cerrarSesion(true);
+    location.reload();
+}
+
+function cerrarRevisionExamen() {
+    if (!ultimoResultadoExamen) return;
+    const r = Object.assign({}, ultimoResultadoExamen);
+    delete r.revision;
+    renderResultadoExamen(r);
+    const seccion = document.getElementById("evaluacion");
+    if (seccion) window.scrollTo({ top: seccion.offsetTop - 10, behavior: "smooth" });
+}
+
 function renderResultadoExamen(r, folio) {
     const calificacion = Number(r.calificacion) || 0;
     const aprobado = String(r.resultado || "").toUpperCase() === "APROBADO" || calificacion >= 80;
@@ -1187,6 +1234,26 @@ function renderResultadoExamen(r, folio) {
                 <li><strong>Importante:</strong> la constancia se descarga una sola vez; guárdala en un lugar seguro.</li>
            </ol>`
         : "";
+
+    // Reingreso (el resultado guardado ya no trae la revisión): tarjeta de agradecimiento.
+    if (!Array.isArray(r.revision)) {
+        mostrarPractica(false);
+        contenedorExamen().innerHTML = `
+        <div class="ef-tarjeta ef-tarjeta-final ef-gracias">
+            <div class="ef-gracias-icono ${aprobado ? "aprobado" : "no-aprobado"}">
+                ${aprobado
+                    ? '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 22l5-3 5 3-1.5-9.5"/></svg>'
+                    : '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>'}
+            </div>
+            <h3 class="ef-gracias-titulo">${aprobado ? "¡Muchas gracias por concluir el curso!" : "¡Muchas gracias por tu participación!"}</h3>
+            <p class="ef-gracias-texto">${aprobado
+                ? "Felicidades por acreditar el curso. Te agradecemos tu compromiso y dedicación."
+                : "Te agradecemos tu tiempo y dedicación en este curso."}</p>
+            <p class="ef-gracias-cierre">Ya puedes cerrar esta ventana.</p>
+            <button type="button" class="btn-principal ef-gracias-salir" onclick="salirDelCurso()">Salir del curso</button>
+        </div>`;
+        return;
+    }
 
     // Retroalimentación: todas las preguntas del examen (la envía EnviarExamen en "revision").
     // Correcta: pregunta + su respuesta en verde.
@@ -1212,9 +1279,14 @@ function renderResultadoExamen(r, folio) {
                 <div class="ef-rev-preg"><span class="ef-num">${i + 1}</span>${escaparHTML(q.pregunta || "")}</div>
                 ${cuerpo}
             </div>`;
-           }).join("")}`
+           }).join("")}
+           <div class="ef-cerrar-rev">
+                <p>Cuando termines de revisar, cierra la revisión. Después ya no podrás volver a consultarla.</p>
+                <button type="button" class="btn-principal" onclick="cerrarRevisionExamen()">Terminar revisión</button>
+           </div>`
         : "";
 
+    ultimoResultadoExamen = r;
     mostrarPractica(false);
     contenedorExamen().innerHTML = `
         <div class="ef-tarjeta ef-tarjeta-final">
@@ -1508,6 +1580,145 @@ function verificarIncumplimientos() {
         desbloquearActividad22();
     }
 }
+
+/* ============================================================
+   ACTIVIDAD 3.1 · ORDENA EL PROCESO GENERAL DEL PROGRAMA OJT (Módulo 3)
+   Tarjetas que se arrastran (o se tocan) a 5 espacios numerados.
+   Al acertar las 5 se habilita el botón para completar el módulo.
+   ============================================================ */
+
+const ACT31_DATA = [{"id": "g1", "t": "Ingreso al Programa", "d": "Con tu curso básico aprobado, la CFTAE lo informa y la CPEPT te registra y notifica al ICOJT y a tu área.", "p": "Pasos 1 a 4", "ic": "<svg viewBox=\"0 0 100 100\" class=\"ic\"><circle cx=\"50\" cy=\"28\" r=\"16\" fill=\"#FFFFFF\"/><path d=\"M18,92 a32,34 0 0 1 64,0z\" fill=\"#FFFFFF\"/><path d=\"M40,52 l10,16 10,-16\" stroke=\"#1B4A78\" stroke-width=\"4\" fill=\"none\"/><rect x=\"45\" y=\"64\" width=\"10\" height=\"12\" rx=\"2\" fill=\"#1B4A78\"/></svg>"}, {"id": "g2", "t": "Programación", "d": "El ICOJT, con el IOJT, revisa tus funciones, elabora tu plan individual y propone eventos por tarea y nivel.", "p": "Pasos 5 a 11", "ic": "<svg viewBox=\"0 0 100 100\" class=\"ic\"><rect x=\"12\" y=\"20\" width=\"76\" height=\"68\" rx=\"8\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"7\"/><rect x=\"12\" y=\"20\" width=\"76\" height=\"18\" rx=\"6\" fill=\"#FFFFFF\"/><rect x=\"28\" y=\"10\" width=\"7\" height=\"18\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"65\" y=\"10\" width=\"7\" height=\"18\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"24\" y=\"48\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"38\" y=\"48\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"52\" y=\"48\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"66\" y=\"48\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"24\" y=\"64\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"38\" y=\"64\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"52\" y=\"64\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/><rect x=\"66\" y=\"64\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#FFFFFF\"/></svg>"}, {"id": "g3", "t": "Autorización", "d": "El titular del área autoriza la programación y, cuando corresponde, emite el oficio de comisión.", "p": "Pasos 12 y 13", "ic": "<svg viewBox=\"0 0 100 100\" class=\"ic\"><path d=\"M38,10 h24 v22 c0,8 10,10 10,20 h-44 c0,-10 10,-12 10,-20z\" fill=\"#FFFFFF\"/><rect x=\"14\" y=\"54\" width=\"72\" height=\"14\" rx=\"3\" fill=\"#FFFFFF\"/><rect x=\"18\" y=\"80\" width=\"64\" height=\"8\" rx=\"3\" fill=\"#FFFFFF\"/></svg>"}, {"id": "g4", "t": "Entrenamiento", "d": "Realizas los Niveles 1, 2 y 3 con evaluación; la CPEPT registra cada nivel antes de programar el siguiente.", "p": "Pasos 14 a 19", "ic": "<svg viewBox=\"0 0 100 100\" class=\"ic\"><path d=\"M66,10 a22,22 0 0 0 -26,28 l-28,28 a8,8 0 0 0 12,12 l28,-28 a22,22 0 0 0 28,-26 l-13,13 -12,-4 -4,-12z\" fill=\"#FFFFFF\"/></svg>"}, {"id": "g5", "t": "Registro y reporte", "d": "Copia íntegra a tu expediente; la CPEPT registra el avance e informa a la Dirección del CIAAC.", "p": "Pasos 20 a 25", "ic": "<svg viewBox=\"0 0 100 100\" class=\"ic\"><path d=\"M8,24 h30 l8,10 h46 v52 h-84z\" fill=\"#FFFFFF\"/></svg>"}];
+
+function iniciarActividad31() {
+    const root = document.getElementById("act31");
+    if (!root) return;
+    const board = root.querySelector(".board");
+    const slots = root.querySelector(".slots");
+    const pool = root.querySelector(".pool");
+    const res = root.querySelector(".res");
+    const EMPTY = '<div class="empty">Suelta aquí</div>';
+
+    function shuffle(a) {
+        a = a.slice();
+        do {
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+        } while (a.every((x, i) => x.id === ACT31_DATA[i].id));   // nunca en el orden correcto
+        return a;
+    }
+
+    function limpiar() {
+        board.classList.remove("done", "completa");
+        slots.querySelectorAll(".slot").forEach(s => s.classList.remove("good", "bad"));
+        res.textContent = "";
+        res.classList.remove("ok", "no");
+    }
+
+    function colocar(c, s) {
+        const origen = c.parentElement, previa = s.querySelector(".card");
+        if (previa) {
+            if (origen.classList.contains("slot")) { origen.innerHTML = ""; origen.appendChild(previa); }
+            else pool.appendChild(previa);
+        } else if (origen.classList.contains("slot")) {
+            origen.innerHTML = EMPTY;
+        }
+        s.innerHTML = "";
+        s.appendChild(c);
+    }
+
+    function tarjeta(x) {
+        const c = document.createElement("div");
+        c.className = "card";
+        c.draggable = true;
+        c.dataset.id = x.id;
+        c.innerHTML = '<div class="ib">' + x.ic + '</div><div class="tt"></div><p>' + x.d + '</p><div class="pz">' + x.p + '</div>';
+        c.addEventListener("dragstart", e => e.dataTransfer.setData("text", x.id));
+        c.addEventListener("click", () => {
+            limpiar();
+            if (c.parentElement.classList.contains("slot")) {
+                const s = c.parentElement;
+                pool.appendChild(c);
+                s.innerHTML = EMPTY;
+            } else {
+                const libre = [...slots.children].find(s => !s.querySelector(".card"));
+                if (libre) colocar(c, libre);
+            }
+        });
+        return c;
+    }
+
+    function construir() {
+        limpiar();
+        slots.innerHTML = "";
+        pool.innerHTML = "";
+        ACT31_DATA.forEach(() => {
+            const s = document.createElement("div");
+            s.className = "slot";
+            s.innerHTML = EMPTY;
+            s.addEventListener("dragover", e => { e.preventDefault(); s.classList.add("over"); });
+            s.addEventListener("dragleave", () => s.classList.remove("over"));
+            s.addEventListener("drop", e => {
+                e.preventDefault();
+                s.classList.remove("over");
+                const c = root.querySelector('.card[data-id="' + e.dataTransfer.getData("text") + '"]');
+                if (c) { limpiar(); colocar(c, s); }
+            });
+            slots.appendChild(s);
+        });
+        shuffle(ACT31_DATA).forEach(x => pool.appendChild(tarjeta(x)));
+    }
+
+    pool.addEventListener("dragover", e => e.preventDefault());
+    pool.addEventListener("drop", e => {
+        const c = root.querySelector('.card[data-id="' + e.dataTransfer.getData("text") + '"]');
+        if (!c) return;
+        const origen = c.parentElement;
+        if (origen.classList.contains("slot")) origen.innerHTML = EMPTY;
+        pool.appendChild(c);
+        limpiar();
+    });
+
+    root.querySelector(".go").onclick = function () {
+        limpiar();
+        const espacios = [...slots.children];
+        const vacios = espacios.filter(s => !s.querySelector(".card")).length;
+        if (vacios) {
+            res.textContent = "Coloca las 5 tarjetas antes de verificar (te faltan " + vacios + ").";
+            res.classList.add("no");
+            return;
+        }
+
+        let aciertos = 0;
+        espacios.forEach((s, i) => {
+            const ok = s.querySelector(".card").dataset.id === ACT31_DATA[i].id;
+            s.classList.add(ok ? "good" : "bad");
+            if (ok) aciertos++;
+        });
+
+        const completa = aciertos === ACT31_DATA.length;
+        board.classList.add("done");
+        if (completa) board.classList.add("completa");
+
+        // Nombre de la fase: con su número solo al acertar todo (para no regalar el orden).
+        root.querySelectorAll(".card").forEach(c => {
+            const k = ACT31_DATA.findIndex(x => x.id === c.dataset.id);
+            c.querySelector(".tt").textContent = (completa ? (k + 1) + ". " : "") + ACT31_DATA[k].t;
+        });
+
+        res.classList.add(completa ? "ok" : "no");
+        res.textContent = "Resultado: " + aciertos + " de 5 · " + (completa
+            ? "¡Excelente! Dominas la secuencia."
+            : "Las tarjetas en rojo no están en su lugar. Reacomódalas y vuelve a verificar.");
+
+        if (completa) habilitarBotonCompletar(moduloEnPantalla);
+    };
+
+    root.querySelector(".rs").onclick = construir;
+    construir();
+}
+
 
 /* ============================================================
    ACTIVIDAD 2.1 · CASO DEL REGISTRO DE ANA (Módulo 2)
