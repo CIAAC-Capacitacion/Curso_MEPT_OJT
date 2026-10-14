@@ -159,11 +159,11 @@
 .ef-rev-just strong{color:var(--texto,#182430)}
 @media (max-width:560px){.ef-tarjeta{padding:20px 18px}.ef-pregunta{padding:18px 16px}.ef-resultado-calif{font-size:44px}}
 /* ===== Fecha y hora en el menú blanco ===== */
-.menu-fecha{position:absolute;right:24px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:7px;font-size:13px;color:var(--texto-suave,#5C6B7A);white-space:nowrap}
-.menu-fecha svg{width:16px;height:16px;color:var(--oro,#B98A2E);flex-shrink:0}
-.menu-fecha strong{color:var(--azul,#0E2A47);font-weight:600}
+.menu-fecha{position:absolute;right:max(4%,calc((100% - 1180px)/2));bottom:16px;display:flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.75);white-space:nowrap;z-index:2}
+.menu-fecha svg{width:15px;height:15px;color:var(--oro,#B98A2E);flex-shrink:0}
+.menu-fecha strong{color:#fff;font-weight:600}
 #menuFechaDia{display:inline-block}#menuFechaDia::first-letter{text-transform:uppercase}
-@media (max-width:980px){.menu-fecha{position:static;transform:none;flex-basis:100%;justify-content:center;padding-top:4px;font-size:12.5px}}
+@media (max-width:600px){.header{flex-direction:column}.menu-fecha{position:static;justify-content:center;margin-top:12px;font-size:12.5px}}
 </style>
 </head>
 <body>
@@ -264,6 +264,8 @@ Cerrar sesión
 
 </div>
 
+<span class="menu-fecha" aria-live="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5v3M16 3.5v3M4.5 9h15"/><rect x="4.5" y="5.5" width="15" height="15" rx="2"/></svg><span id="menuFechaDia"></span><strong id="menuFechaHora"></strong></span>
+
 </header>
 
 <nav class="menu" id="menuNav">
@@ -292,7 +294,6 @@ Cerrar sesión
 
 </button>
 
-<span class="menu-fecha" aria-live="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5v3M16 3.5v3M4.5 9h15"/><rect x="4.5" y="5.5" width="15" height="15" rx="2"/></svg><span id="menuFechaDia"></span><strong id="menuFechaHora"></strong></span>
 
 </nav>
 
