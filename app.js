@@ -819,6 +819,30 @@ function calificar() {
 
 let examenActual = null;   // { folio, preguntas, orden:{id:[letras]}, respuestas:{id:letra} }
 let examenEnviando = false;
+let examenIniciando = false;   // evita dos solicitudes de inicio al mismo tiempo
+const ESPERA_REINTENTO_SEG = 120; // segundos de espera antes de permitir reintentar (el servidor puede seguir procesando)
+
+// Muestra un botón de reintento que solo se habilita después de una cuenta regresiva.
+function botonReintentoConEspera(idBoton, textoBoton, accion) {
+    let restante = ESPERA_REINTENTO_SEG;
+    const boton = document.getElementById(idBoton);
+    if (!boton) return;
+    boton.disabled = true;
+    boton.textContent = textoBoton + " (" + restante + " s)";
+    const t = setInterval(() => {
+        restante--;
+        const b = document.getElementById(idBoton);
+        if (!b) { clearInterval(t); return; }
+        if (restante <= 0) {
+            clearInterval(t);
+            b.disabled = false;
+            b.textContent = textoBoton;
+            b.onclick = accion;
+        } else {
+            b.textContent = textoBoton + " (" + restante + " s)";
+        }
+    }, 1000);
+}
 
 const MODULOS_EXAMEN = [
     { clave: "m1", nombre: "Módulo 1 · Marco general del Programa OJT" },
@@ -956,16 +980,22 @@ function esMensajeDeSesion(data) {
 }
 
 function iniciarExamenFinal() {
+    if (examenIniciando) return;
     if (!todosLosModulosCompletos()) {
         alert("Debes completar el módulo 3 antes de presentar la evaluación final.");
         return;
     }
 
+    examenIniciando = true;
+    const btnComenzar = document.getElementById("btnComenzarExamen");
+    if (btnComenzar) btnComenzar.disabled = true;
+
     mostrarPractica(false);
-    renderCargandoExamen("Preparando tu evaluación… esto puede tardar unos segundos.");
+    renderCargandoExamen("Preparando tu evaluación… esto puede tardar hasta un minuto. No recargues ni cierres esta página.");
 
     llamarFlujo(URL_INICIAR_EXAMEN, { correo: obtenerCorreo(), token: obtenerToken() })
         .then(data => {
+            examenIniciando = false;
             if (esMensajeDeSesion(data)) {
                 renderAvisoExamen("error", data.mensaje || "Tu sesión ya no es válida. Ingresa de nuevo.",
                     "Ingresar de nuevo", "volverAIngresar()");
@@ -1017,9 +1047,15 @@ function iniciarExamenFinal() {
             renderPreguntasExamen();
         })
         .catch(() => {
-            renderAvisoExamen("error",
-                "No pudimos conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.",
-                "Reintentar", "iniciarExamenFinal()");
+            examenIniciando = false;
+            contenedorExamen().innerHTML = `
+                <div class="ef-tarjeta ef-tarjeta-final">
+                    <h3>Evaluación final</h3>
+                    <div class="ef-aviso error">El servidor tardó más de lo normal en responder. Es posible que tu evaluación se siga preparando:
+                    espera a que termine la cuenta regresiva y vuelve a intentarlo. No recargues la página.</div>
+                    <div class="ef-botones"><button class="btn-principal" id="btnReintentarInicio" disabled>Reintentar</button></div>
+                </div>`;
+            botonReintentoConEspera("btnReintentarInicio", "Reintentar", () => iniciarExamenFinal());
         });
 }
 
@@ -1124,7 +1160,7 @@ function pedirConfirmacionExamen() {
             <p><strong>¿Enviar tu evaluación final?</strong><br>
             Una vez enviada no podrás cambiar tus respuestas ni volver a presentarla.</p>
             <div class="ef-botones">
-                <button class="btn-principal" onclick="enviarExamenFinal()">Sí, enviar</button>
+                <button class="btn-principal" onclick="this.disabled=true; enviarExamenFinal()">Sí, enviar</button>
                 <button class="btn-secundario" onclick="cancelarConfirmacionExamen()">Revisar mis respuestas</button>
             </div>
         </div>`;
@@ -1194,11 +1230,13 @@ function enviarExamenFinal() {
             examenEnviando = false;
             contenedorExamen().querySelectorAll("input").forEach(i => { i.disabled = false; });
             zona.innerHTML = `
-                <div class="ef-aviso error">No pudimos enviar tu evaluación por un problema de conexión.
-                Tus respuestas están guardadas en este equipo. Revisa tu conexión e inténtalo de nuevo.</div>
+                <div class="ef-aviso error">El servidor tardó más de lo normal en responder. Es posible que tu evaluación sí se haya registrado:
+                revisa tu correo institucional. Tus respuestas están guardadas en este equipo; si no recibiste tu resultado,
+                espera a que termine la cuenta regresiva y vuelve a intentarlo. No recargues la página.</div>
                 <div class="ef-botones">
-                    <button class="btn-principal" onclick="pedirConfirmacionExamen()">Reintentar envío</button>
+                    <button class="btn-principal" id="btnReintentarEnvio" disabled>Reintentar envío</button>
                 </div>`;
+            botonReintentoConEspera("btnReintentarEnvio", "Reintentar envío", () => enviarExamenFinal());
         });
 }
 
