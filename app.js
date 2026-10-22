@@ -850,13 +850,35 @@ const MODULOS_EXAMEN = [
     { clave: "m3", nombre: "Módulo 3 · Proceso de ejecución" }
 ];
 
+// Edición actual del curso. Al iniciar una nueva edición, cambia EDICION_CURSO
+// y FOLIO_INICIO_EDICION (primer número de folio de la edición).
+const EDICION_CURSO = "2026G2";
+const FOLIO_INICIO_EDICION = 191;
+
 function claveExamen() {
+    return "examenFinal_" + EDICION_CURSO + "_" + (obtenerCorreo() || "anonimo");
+}
+
+// Clave que usaba la página antes de separar por edición.
+function claveExamenAnterior() {
     return "examenFinal_" + (obtenerCorreo() || "anonimo");
+}
+
+// true si el folio guardado pertenece a esta edición (ej. OJT-2026-0437 >= 191).
+function folioEsDeEstaEdicion(folio) {
+    const m = String(folio || "").match(/(\d+)\s*$/);
+    return m ? Number(m[1]) >= FOLIO_INICIO_EDICION : false;
 }
 
 function leerExamenGuardado() {
     try {
-        return JSON.parse(localStorage.getItem(claveExamen())) || {};
+        const actual = JSON.parse(localStorage.getItem(claveExamen()));
+        if (actual) return actual;
+        // Lo guardado con la clave anterior solo se usa si es de esta edición;
+        // un resultado de una edición pasada (p. ej. 1.ª convocatoria) se ignora.
+        const anterior = JSON.parse(localStorage.getItem(claveExamenAnterior()));
+        if (anterior && folioEsDeEstaEdicion(anterior.folio)) return anterior;
+        return {};
     } catch (e) {
         return {};
     }
