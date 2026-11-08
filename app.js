@@ -7,6 +7,12 @@ const caso21Respuestas = {};
 
 const DOMINIO_INSTITUCIONAL = "@afac.gob.mx";
 
+// Edición actual del curso. Al iniciar una nueva edición, cambia EDICION_CURSO
+// y FOLIO_INICIO_EDICION (primer número de folio de la edición; debe coincidir
+// con el número que usa varFolio en el flujo IniciarExamen).
+const EDICION_CURSO = "2026G3";
+const FOLIO_INICIO_EDICION = 957;
+
 // URLs de los dos flujos de Power Automate para el código de acceso.
 const URL_ENVIAR_CODIGO = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/10/workflows/ba842193e68f400998fc6341ccaa467c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=C3iuWkiPu8P7CBwgNp9rZLmnA2O71bzkBs0tO94wNoA";
 const URL_VALIDAR_CODIGO = "https://defaultb7c9bdfffd974461ab1bd2a2813f8b.a4.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/26/workflows/99a974f68f4b410697ac1202e178d13d/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FiEyhSJ-qHuIAB-OcC0EoN3ZxaxDMzXtqr1t2oKs0gI";
@@ -429,7 +435,7 @@ function registrarEvento(tipo, numeroModulo) {
 let progreso = { modulo1: false, modulo2: false, modulo3: false };
 
 function claveProgreso() {
-    return "progresoCurso_" + (obtenerCorreo() || "anonimo");
+    return "progresoCurso_" + EDICION_CURSO + "_" + (obtenerCorreo() || "anonimo");
 }
 
 function cargarProgreso() {
@@ -850,10 +856,6 @@ const MODULOS_EXAMEN = [
     { clave: "m3", nombre: "Módulo 3 · Proceso de ejecución" }
 ];
 
-// Edición actual del curso. Al iniciar una nueva edición, cambia EDICION_CURSO
-// y FOLIO_INICIO_EDICION (primer número de folio de la edición).
-const EDICION_CURSO = "2026G2";
-const FOLIO_INICIO_EDICION = 191;
 
 function claveExamen() {
     return "examenFinal_" + EDICION_CURSO + "_" + (obtenerCorreo() || "anonimo");
